@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+	</head>
+	<style>
+		
+		.mytype{
+			width: 20%;
+			height: 50px;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header" >
+			<h1 id="title" class="mui-title">我的类别</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			<button type="button" id="btnSave" 
+				class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
+				保存
+			</button>
+		</header>
+		<div class="mui-content">
+			
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script> 
+		<script>
+			mui.plusReady(function(){
+				initMyType();    
+				initEvent();
+				function initMyType(){
+					app.getData('goods/getMyTypeList.do',{operator:qiao.h.getItem('loginuser')},function(data){
+						var buttons = '';
+						data.forEach(function(item){
+							buttons += '<button type="button" class="mui-btn '+(item.myType=='0'?'':'mui-btn-red')+
+							' mytype" data-code="'+item.typeCode+'">'+item.type+'</button>';
+						})
+						$('.mui-content').html(buttons);
+					})
+				}
+				function initEvent(){
+					qiao.on('.mytype','tap',function(){
+						
+						if($(this).hasClass('mui-btn-red')){
+							
+							$(this).removeClass('mui-btn-red');
+							
+						}
+						else{
+							$(this).addClass('mui-btn-red');
+						}
+					})
+					qiao.on('#btnSave','tap',function(){
+						var myTypeList=[];
+						for(var i=0;i<$('.mytype').length;i++){
+							if($('.mytype')[i].classList.contains('mui-btn-red')){
+								myTypeList.push({typeCode:$('.mytype')[i].dataset.code});
+							}
+							
+						}
+						app.postData('goods/saveMyType.do',{operator:qiao.h.getItem('loginuser'),
+						myType:JSON.stringify(myTypeList)},function(data){
+							if(data.result == 'success'){
+								mui.toast('保存成功');
+								mui.back();
+							}else{
+								mui.toast('保存失败');
+							}
+						})
+						
+					})
+					qiao.on('#btnback','tap',function(){
+						mui.back();
+					})
+				}
+			});
+		</script>
+		 
+	</body>
+</html>

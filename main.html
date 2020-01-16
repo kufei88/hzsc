@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="myFonts/iconfont.css" />
+		<style>
+			ul {
+				font-size: 14px;
+				color: #8f8f94;
+			}
+			.mui-btn {
+				padding: 10px;
+			}
+			.mui-bar .mui-icon{  
+				font-size: 30px;
+			}
+			
+			
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header" style="padding-right: 15px;">
+			<h1 id="title" class="mui-title">开新单</h1>
+			<button type="button" id="btnok" style="display: none;" class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
+				保存
+			</button>
+		</header>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" href="entrySellList.html" id="nav1">
+				<span class="mui-icon iconfont icon-kaidan" id="navicon1"></span>
+				<span class="mui-tab-label" id="tab1">开新单</span>
+			</a>
+			<a class="mui-tab-item" href="sellOrder.html" id="nav2">
+				<span class="mui-icon iconfont icon-xinjian" id="navicon2"></span>
+				<span class="mui-tab-label" id="tab2">销售订单</span>
+			</a>
+			<a class="mui-tab-item " href="clientDeliver.html" id="nav3">
+				<span class="mui-icon iconfont icon-distribution" id="navicon3"></span>
+				<span class="mui-tab-label" id="tab3">按客配发</span>
+			</a>
+			<a class="mui-tab-item" href="singleDeliver.html" id="nav4">
+				<span class="mui-icon iconfont icon-fahuo" id="navicon4"></span>
+				<span class="mui-tab-label" id="tab4">单品配发</span>
+			</a>
+
+
+
+
+			<a class="mui-tab-item" href="my.html" id="nav5">
+				<span class="mui-icon iconfont icon-wode"></span>
+				<span class="mui-tab-label" id="tab5">我的</span>
+			</a>
+		</nav>
+		<div class="mui-content">
+
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="js/qiao.h.js"></script>
+		<script>
+			(function($, doc) {
+				$.init();
+
+				var settings = app.getSettings();
+				var account = doc.getElementById('account');
+				//
+				var subpages = ['entrySellList.html',
+					'sellOrder.html',
+					'clientDeliver.html',
+					'singleDeliver.html',
+
+
+
+					'my.html'
+				];
+				var subpage_style = {
+					top: '45px',
+					bottom: '51px'
+				};
+
+				var aniShow = {};
+				window.addEventListener('show', function() {
+					//var state = app.getState();
+					//account.innerText = state.account;
+					console.log(11111);
+					var userType = qiao.h.getItem('usertype');
+					console.log(userType);
+					if (userType == 'supplier') {
+						doc.getElementById('tab1').innerText = '查库存';
+						doc.getElementById('title').innerText = '查库存';
+						doc.getElementById('nav1').href = 'supplier_stock.html';
+						doc.getElementById('navicon1').classList.remove('icon-kaidan');
+						doc.getElementById('navicon1').classList.add('icon-kucun1');
+						subpages[0] = 'supplier_stock.html';
+
+						doc.getElementById('tab2').innerText = '查销售';
+						doc.getElementById('nav2').href = 'supplier_sellQuery.html';
+						doc.getElementById('navicon2').classList.remove('icon-xinjian');
+						doc.getElementById('navicon2').classList.add('icon-jiesuan');
+						subpages[1] = 'supplier_sellQuery.html';
+
+						doc.getElementById('tab3').innerText = '查结算';
+						doc.getElementById('nav3').href = 'supplier_report.html';
+						doc.getElementById('navicon3').classList.remove('icon-distribution');
+						doc.getElementById('navicon3').classList.add('icon-xiaoshouchaxun');
+						subpages[2] = 'supplier_report.html';
+
+						doc.getElementById('tab4').innerText = '评估分析';
+						doc.getElementById('nav4').href = 'supplierAssess.html';
+						doc.getElementById('navicon4').classList.remove('icon-fahuo');
+						doc.getElementById('navicon4').classList.add('icon-pinggu');
+						subpages[3] = 'supplierAssess.html';
+
+						doc.getElementById('tab5').innerText = '我的';
+						doc.getElementById('nav5').href = 'supplier_my.html';
+
+						subpages[4] = 'supplier_my.html';
+					}
+				}, false);
+				$.plusReady(function() {
+
+					var self = plus.webview.currentWebview();
+					for (var i = 0; i < 5; i++) {
+						var temp = {};
+						var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
+						if (i > 0) {
+							sub.hide();
+						} else {
+							temp[subpages[i]] = "true";
+							mui.extend(aniShow, temp);
+						}
+						self.append(sub);
+					}
+					//--
+					$.oldBack = mui.back;
+					var backButtonPress = 0;
+					$.back = function(event) {
+						backButtonPress++;
+						if (backButtonPress > 1) {
+							plus.runtime.quit();
+						} else {
+							plus.nativeUI.toast('再按一次退出应用');
+						}
+						setTimeout(function() {
+							backButtonPress = 0;
+						}, 1000);
+						return false;
+					};
+				});
+				document.getElementById("btnok").addEventListener('tap', function() {
+					console.log(doc.getElementById('title').innerText);
+					if (doc.getElementById('title').innerText == '销售订单') {
+						qiao.h.fire('sellOrder.html', 'btnok');
+					} else {
+						qiao.h.fire('newBill.html', 'btnok');
+					}
+				})
+				//当前激活选项
+				var activeTab = subpages[0];
+				var title = document.getElementById("title");
+
+				//选项卡点击事件
+				mui('.mui-bar-tab').on('tap', 'a', function(e) {
+					var targetTab = this.getAttribute('href');
+					if (targetTab == activeTab) {
+						return;
+					}
+					//更换标题
+					title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
+					if (!((this.querySelector('.mui-tab-label').innerHTML == '销售订单'))) {
+						document.getElementById("btnok").style.display = 'none';
+					} else {
+						document.getElementById("btnok").style.display = '';
+					}
+
+					if (this.querySelector('.mui-tab-label').innerHTML == '今日开单') {
+						qiao.h.fire('todayBill.html', 'reload');
+					} else if (this.querySelector('.mui-tab-label').innerHTML == '按客配发') {
+						qiao.h.fire('clientDeliver.html', 'reload');
+					} else if (this.querySelector('.mui-tab-label').innerHTML == '单品配发') {
+						qiao.h.fire('singleDeliver.html', 'reload');
+					}
+
+					//显示目标选项卡
+					//若为iOS平台或非首次显示，则直接显示
+					if (mui.os.ios || aniShow[targetTab]) {
+						plus.webview.show(targetTab);
+					} else {
+						//否则，使用fade-in动画，且保存变量
+						var temp = {};
+						temp[targetTab] = "true";
+						mui.extend(aniShow, temp);
+						plus.webview.show(targetTab, "fade-in", 300);
+					}
+					//隐藏当前;
+					plus.webview.hide(activeTab);
+					//更改当前活跃的选项卡
+					activeTab = targetTab;
+				});
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

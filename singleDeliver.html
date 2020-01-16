@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/xtab.css" />
+		<link rel="stylesheet" href="css/table.css" />
+	</head>
+	<style>
+		.tableData {
+			height: 30px;
+		}
+	</style>
+	<body>
+		<div class="mui-content">
+		<div class="mui-bar" style="padding: 0;">
+			<div class="container">
+			  <div class="xtab-container"  id="J_Tab">  
+			  <div class="xtab-nav-container">
+			    <div class="xs-container">
+			      <ul class="xs-content">
+			        
+			      </ul>
+			    </div>
+			  </div>
+			  <div class="xtab-btn-slide"></div>
+			</div>
+			<div id="mask" style="display:none"></div>
+			</div>
+			<div class="mui-row tableHeader">
+			
+					<div class="mui-col-sm-3 mui-col-xs-3 textCenter">名称</div>
+					<div class="mui-col-sm-3 mui-col-xs-3 textCenter">库存数量</div>
+					<div class="mui-col-sm-3 mui-col-xs-3 textCenter" >订量</div>
+					<div class="mui-col-sm-3 mui-col-xs-3 textCenter" >单价</div>
+					
+					
+
+					
+
+					
+			</div>
+		</div>
+			<div class="mui-scroll">
+			<ul class="mui-table-view" style="margin-top:90px;" id="clientList">
+				
+			</ul>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>
+		<script type="text/javascript" src="http://g.tbcdn.cn/??kissy/k/5.0.0/seed-debug.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+				var typeList = [];
+				var currentType = '全部';  
+				app.getData('goods/getGoodsType.do',{operator:qiao.h.getItem('loginuser')},function(data){
+					var lis = '<li class="xtab-item">全部</li>';
+					typeList.push('全部');
+					data.forEach(function(item){
+						lis += '<li class="xtab-item">'+item.type+'</li>';
+						typeList.push(item.type);
+					});
+					console.log(data.length);
+					$('.xs-content').html(lis);
+				//	currentType = data.length>0?data[0].type:'';
+					getNotDeliverGoods(currentType);  
+					require.config({
+				        packages: {
+				            "kg":{
+				                tag: "20140918",
+				                 base: "http://g.tbcdn.cn/kg/"
+				            }
+				        }
+				    });
+				   require("kg/xtab/1.0.0/index",function(XTab){
+				      var xtab = new XTab({
+				        renderTo:"#J_Tab",
+				        maskNode:"#mask",
+				        headerTitle:"选择其它类别"
+				      });
+				      xtab.render();
+				      xtab.switchTo(0);
+				      xtab.on("switch",function(e){
+				      	currentType = typeList[e.curIndex];
+				        getNotDeliverGoods(typeList[e.curIndex]);
+				      })
+				      xtab.on("switchchange",function(e){
+				       
+				      })
+				    });
+				})  
+				qiao.on('#clientList li', 'tap', function(){
+					//console.log($(this).data('client'));
+					qiao.h.open('singleDeliverList','singleDeliverList.html',
+							{
+								goodsCode:$(this).data('goodscode'),
+								goodsName:$(this).data('goodsname')
+							});
+				})
+				window.addEventListener('back',function(){
+					getNotDeliverGoods(currentType);
+				})
+				window.addEventListener('reload',function(){
+					getNotDeliverGoods(currentType);
+				})
+			})
+			function getNotDeliverGoods(type){
+				app.getData('bill/getNotDeliverGoods.do',{type:type,operator:qiao.h.getItem('loginuser')},function(data){
+					console.log(JSON.stringify(data));
+					var clientList = '';
+					var type= '';
+					var count = 0;
+					data.forEach(function(item,index){
+						if((type=='')||(type!=item.type)){
+							type = item.type
+							count++;
+						}
+						clientList += genli(item,count);
+					})
+					$('#clientList').html(clientList);
+				})
+				
+			}
+			function genli(item,count){
+				var goodsLis = '';
+				goodsLis += '<li class="mui-table-view-cell mui-row '+ (count % 2 !== 0 ? 'odd' : '') +' tableData" data-goodscode="'+item.goodsCode
+				+'" data-goodsname="'+item.area+item.goodsName+'" style="position:relative;height:50px;padding:10px 0" >';
+			 			
+			/*	goodsLis += '<div style="position:absolute;top:10px;left:20px">';
+				goodsLis += '<span style="color:#c9c6c6;width:60px;display:inline-block">名称:</span>';
+				goodsLis += item.type+item.goodsName+'</div>';
+				goodsLis += '<div style="position:absolute;top:10px;left:60%">';
+				goodsLis += '<span style="color:#c9c6c6;width:80px;display:inline-block">库存数量:</span>';
+				goodsLis += item.stockNum+'</div>';
+				goodsLis += '<div style="position:absolute;top:40px;left:20px">';
+				goodsLis += '<span style="color:#c9c6c6;width:60px;display:inline-block">单价:</span>';
+				goodsLis += item.price+'</div>';
+				goodsLis += '<div style="position:absolute;top:40px;left:60%">';
+				goodsLis += '<span style="color:#c9c6c6;width:80px;display:inline-block">订量:</span>';
+				
+				goodsLis += item.orderNum+'</div>'; */
+				goodsLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">' + item.area + item.goodsName + '</div>';
+				goodsLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">' + item.stockNum.toFixed(2) + '</div>';
+				goodsLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">' + item.orderNum.toFixed(2) + '</div>';
+				goodsLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">' + item.price.toFixed(2) + '</div>';
+				
+				
+				goodsLis += '</li>';
+				return goodsLis;
+			}
+		</script>
+	</body>
+
+</html>

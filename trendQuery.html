@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/mui.min.js"></script>
+    	<script type="text/javascript" src="js/qiao.h.js" ></script>
+    	<link href="css/mui.css" rel="stylesheet"/>
+    
+    	
+    	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	</head>
+	<style>
+		.tablehead{
+			background: #555555;
+			color: #F0F0F0;
+			
+		}
+		.tablehead th{
+			padding: 10px;
+		}
+		td{
+			text-align: center;
+			padding: 10px;
+		}
+		.date{
+			height: 50px;
+			line-height: 50px;
+			padding-left: 10px;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		<a id="back" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">销售走势</h1>
+		<a id="condition" class="mui-icon iconfont icon-guolv mui-pull-right"></a>
+		</header>
+		<div class="mui-content">
+			<div class="mui-row" style="border-bottom: 1px solid #DDDDDD;">
+			
+			<div id="selectBegin" class="date  mui-col-xs-6" style="border: none;">
+				<div class="mui-navigate-right">开始日期:<span id="beginDate"></span></div>
+			</div>
+			<div id="selectEnd" class="date mui-col-xs-6" >
+				<div class="mui-navigate-right">结束日期:<span id="endDate"></span></div>
+			</div>
+			
+			</div>
+			
+			<div id="main" style="width: 100%;height:50vh;"></div>
+			<div id="list">
+				<table style="width: 100%;" id="tablelist">
+					
+				</table>
+			</div>
+			
+		</div>
+		
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/echarts.js" ></script>
+		<script>
+			// 基于准备好的dom，初始化echarts实例
+	mui.init()
+	mui.plusReady(function(){
+		var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+        
+        qiao.on('#selectBegin','tap',function(){
+						app.selectDate($('#beginDate').text(),function(result){
+							
+							$('#beginDate').text(result);
+							getquery($('#beginDate').text(),$('#endDate').text());
+						})
+					})
+		        
+		        qiao.on('#selectEnd','tap',function(){
+						app.selectDate($('#endDate').text(),function(result){
+							
+							$('#endDate').text(result);
+							getquery($('#beginDate').text(),$('#endDate').text());
+						})
+					})
+        
+        var now = new Date();
+		var begindate = now.getFullYear()+'-'+qiao.h.formatdate(now.getMonth()+1)+
+		'-01';
+		$('#beginDate').text(begindate);
+		var enddate = now.getFullYear()+'-'+qiao.h.formatdate(now.getMonth()+1)+
+		'-'+qiao.h.formatdate(now.getDate());
+		$('#endDate').text(enddate);
+		
+		//$('#daterage').text(begindate+' -- '+enddate);
+		getquery(begindate,enddate);
+		function getquery(begindate,enddate){
+			
+		
+		var data={
+									
+									beginDate:begindate,
+									endDate:enddate
+								 }
+		app.getData('report/getTread.do',
+							data,function(data){
+								var list = [];
+								var str = '<tr class="tablehead"> '+
+						'<th style="width: 50%;">日期</th>'+
+						
+						'<th style="width: 50%;">销售额</th>'+
+						'</tr>';
+								var dataList = [];
+								var valueList = [];
+								data.forEach(function(item,index){
+									dataList.push(
+										item.title
+									)
+									valueList.push(
+										item.value
+									)
+									var styles= index%2==0?'style="background:#fff"':'';
+									str += '<tr '+styles+'> '+
+									
+									'<td>'+item.title+'</td> '+
+									'<td>'+item.value.toFixed(2)+'</td> '+
+								'</tr>';
+								})
+								$('#tablelist').empty().append(str);
+								
+								var option = {
+            
+								    // Make gradient line here
+								    
+								
+								
+								    title: {
+								        
+								        text: ''
+								    },
+								    tooltip: {
+								        trigger: 'axis'
+								    },
+								    calculable : true,
+								    xAxis: [{
+								        data: dataList,
+								       
+								        formatter: function (value, index) {
+										    // 格式化成月/日，只在第一个刻度显示年份
+										    var date = new Date(value);
+										    var texts = [(date.getMonth() + 1), date.getDate()];
+										    if (index === 0) {
+										        texts.unshift(date.getYear());
+										    }
+										    return texts.join('/');
+										}
+								    }],
+								    yAxis: [{
+								        splitLine: {show: false},
+								        axisLabel : {
+							                formatter: function(value){
+							                	return (value/10000)+'万';
+							                }
+							            }
+								    }],
+								    
+								    series: [{
+								        type: 'line',
+								        name:'销售额',
+								        
+								        data: valueList
+								    }]
+						        };
+						        myChart.setOption(option);
+								   
+								});
+		}
+        
+        // 使用刚指定的配置项和数据显示图表。
+        
+})
+        
+		</script>
+		
+	</body>
+</html>

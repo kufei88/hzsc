@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/table.css" />
+	</head>
+	<style>
+		
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header" >
+			<h1 id="title" class="mui-title">我的客户</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			<a id="addClient" class="mui-icon mui-icon-plus mui-pull-right"></a>
+		</header>
+		<div class="mui-content">
+			<div class=" mui-bar" style="padding: 0;">
+				<div style="display:inline-flex; width:100%; padding-left:1px; padding-right:1px;">
+						<div class="mui-input-row" style="height:40px; flex-grow:4;">
+							<input type="text" id="searchContent" class="mui-input-clear s_font-size2"
+								 placeholder="请输入客户/联系电话/经手人" maxlength="100" style="height:100%; padding-right:32px;" />
+						</div>
+						<div style="height:40px; flex-grow:1;">
+							<input type="button" value="搜索" class="u_btn" style="width:100%; height:100%;" />
+						</div>
+				</div>
+				<div class=" tableHeader mui-row" style="">
+				<div class="mui-col-sm-3 mui-col-xs-3 textCenter">客户</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >经手人</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >欠款</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >今日销售</div>
+				<div class="mui-col-sm-3 mui-col-xs-3 textCenter" >信誉额度</div>
+				</div>
+			</div>
+			<div class="mui-scroll">
+			<ul class="mui-table-view"  id="billlist" style="margin-top: 80px;">
+				
+			</ul>
+			</div>
+		</div>
+		<div class="mui-bar mui-bar-footer mui-row" style="padding: 10px;">
+			<div class="mui-col-sm-4 mui-col-xs-4">合计:</div>
+			<div class="mui-col-sm-4 mui-col-xs-4" style="text-align:center" id="shouldPaySum"></div>
+			<div class="mui-col-sm-4 mui-col-xs-4" style="text-align:center" id="sellSum"></div>
+			
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>  
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				
+				
+				initData();
+				function initData(){
+					var dataLis = '';  
+					var shouldPaySum = 0;
+					var sellSum = 0;
+					var paySum = 0;
+					app.getData('client/getClientListByHandler.do',{operator:qiao.h.getItem('loginuser'),
+					search:$('#searchContent').val()},function(data){
+						data.forEach(function(item){
+							dataLis += '<li class="mui-row tableData" data-client="'+item.client+'" '
+							+' data-clientname="'+item.clientName+'" data-address="'+item.address+
+							'" data-handler="'+item.handler+'" data-tel="'+item.tel+
+							'" data-idnumber="'+item.idNumber+'" >';
+							
+							dataLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">'+item.client+'</div>';
+							dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >'+item.handler1+'</div>';
+							dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >'+item.shouldPay.toFixed(2)+'</div>';
+							dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >'+item.sellSum.toFixed(2)+'</div>';
+							dataLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter" >'+item.maxDebt.toFixed(2)+'--'+item.payDate+'</div>';
+							dataLis += '</li>';
+							shouldPaySum += item.shouldPay;
+							sellSum += item.sellSum;
+							
+						})
+						$('#billlist').html(dataLis);
+						$('#shouldPaySum').text(shouldPaySum.toFixed(2));
+						$('#sellSum').text(sellSum.toFixed(2));
+						
+					})
+				}
+				qiao.on('#btnback','tap',function(){
+					mui.back();
+				})
+				qiao.on('.u_btn','tap',function(){
+					initData();
+				})
+				window.addEventListener('addBack',function(event){
+					initData();
+				})
+				qiao.on('#billlist li','tap',function(){
+					qiao.h.open('addClient','addClient.html',{openBy:'clientListByHandler',
+					state:'detail',client:$(this).data('client'),clientName:$(this).data('clientname')
+					,address:$(this).data('address'),handler:$(this).data('handler')
+					,tel:$(this).data('tel'),idNumber:$(this).data('idnumber')});
+				})
+				qiao.on('#addClient','tap',function(){
+					qiao.h.open('addClient','addClient.html',{openBy:'clientListByHandler',state:'add'});
+				})
+			})
+		</script>
+	</body>
+
+</html>

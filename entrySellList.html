@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/table.css" />
+		<link rel="stylesheet" href="myFonts/iconfont.css" />
+	</head>
+	<style>
+		.dateRight{
+			
+		}
+		.billDetail{
+			background: #fff;
+			padding: 5px 10px;
+		}
+		
+		#billList{
+			background: #f0f0f0;
+			padding: 5px 0;
+		}
+		#billList li{
+			
+			padding: 0;
+		}
+		.header,.bottom{
+			background: #FFFFFF;
+			padding: 10px;
+		}
+		.tableData {
+			height: 50px;
+		}
+		#info{
+			padding: 5px;
+			color: #6D6D72;
+		}
+		.add-bill-btn {
+			position: fixed;
+			right: 15px;
+			bottom: 80px;
+			display: block;
+			width: 52px;
+			height: 52px;
+			z-index: 9999;
+			background-color: #ef6f7a;
+			border-radius: 33px;
+			border: 1px solid #ef6f7a;
+			color: white;
+			text-align: center;
+		}
+		
+		.add-bill-btn span {
+			font-size: 20px;
+			line-height: 50px;
+		}
+		
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header" >
+			<h1 id="title" class="mui-title">销售挂单</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			
+	</header> 
+		<div class="mui-content">
+			<div class="mui-bar" style="padding: 0;">
+			
+		    <div class="mui-row tableHeader" >
+				<div class="mui-col-sm-4 mui-col-xs-4 textCenter">客户</div>
+				<div class="mui-col-sm-4 mui-col-xs-4 textCenter">金额</div>
+				<div class="mui-col-sm-4 mui-col-xs-4 textCenter">时间</div>
+				
+				
+			</div>
+			</div>
+		    <ul class="mui-table-view"  id="billList" style="margin-top: 35px;">
+				
+			</ul>
+			<a href="#" class="add-bill-btn" id="newBill">
+
+				<span>新单</span>
+	
+			</a>
+		</div>
+		
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>
+		<script type="text/javascript">
+			mui.init()
+			var delBillAuth = 0;
+			var editBillAuth = 0;
+			var beginDate = '';
+			var endDate = '';
+			var client = '';
+			var type = '';
+			var goodsName = '';
+			var operator = '';
+			var area = '';
+			mui.plusReady(function(){
+				initEvent();
+				$('#header').hide();
+				$('.mui-content').css('margin-top','-30px');
+				
+				
+				search();
+				
+				function initEvent(){
+					qiao.on('#selectBegin','tap',function(){
+						app.selectDate($('#beginDate').text(),function(result){
+							
+							$('#beginDate').text(result);
+							search($('#beginDate').text());
+						})
+					})
+					
+					qiao.on('#btnback','tap',function(){
+						mui.back();
+					})
+					
+					qiao.on('#billList li','tap',function(){
+						qiao.h.open('newBill.html','newBill.html',{billDate:$(this).data('billdate'),
+						client:$(this).data('client')});
+						//qiao.h.fire('newBill.html','enrtySellBack',{billDate:$(this).data('billdate'),
+						//client:$(this).data('client')});
+						//mui.back();
+						
+					})
+					
+					window.addEventListener('reload',function(){
+						
+						search();
+					})
+					  
+					qiao.on('.delBtn','tap',function(){
+						qiao.h.update(db,'delete from enrtySellTableName1 where billDate="'+$(this).data('bill')+'"',
+						function(){
+							search();
+						})
+						return false;
+					})
+					
+					qiao.on('#newBill','tap',function(){
+						qiao.h.open('newBill.html','newBill.html',{});
+					})
+					
+					
+					
+				}
+				    
+				function search(){
+					qiao.h.query(db,'select client,billDate,sum(case  when weight<> "0" then  weight*price else number*price  end) as sum from enrtySellTableName1 group by client,billDate',
+					function(data){
+						var lis = '';
+						
+						for(var i=0;i<data.rows.length;i++){
+							lis += setLi(data.rows.item(i),i);
+						}
+						$('#billList').html(lis);
+					})
+					
+				}
+				
+				function setLi(item,count){
+					var lis = '';
+					    lis = '<li data-billdate="'+item.billDate+'" data-client="'+item.client
+					    +'" class="mui-table-view-cell '+(count%2==0?'odd':'')+'">';
+					    lis += '<div class="mui-slider-right mui-disabled" data-ll="lll">' +
+					
+					'<a class="mui-btn mui-btn-blue delBtn" data-bill="'+item.billDate+'">删除</a>' +
+					'</div>' +
+					
+					'<div class="mui-slider-handle mui-row tableData" style="padding:0">' ;
+						lis += '<div class="mui-col-sm-4 mui-col-xs-4 textCenter">'+item.client+'</div>';
+						lis += '<div class="mui-col-sm-4 mui-col-xs-4 textCenter">'+item.sum.toFixed(2)+'</div>';
+						lis += '<div class="mui-col-sm-4 mui-col-xs-4 textCenter">'+item.billDate+'</div>';
+						lis += '</div>';	
+						
+						lis += '</li>';
+					return lis;
+				}
+				  
+				
+			})
+		</script>
+	</body>
+
+</html>

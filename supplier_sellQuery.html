@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/qiao.h.js"></script>
+		<link href="css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/table.css" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	</head>
+	<style>
+		.date{
+			height: 50px;
+			line-height: 50px;
+			padding-left: 10px;
+		}
+	</style>
+
+	<body>  
+
+		<div class="mui-content">
+			<div class="mui-row" style="border-bottom: 1px solid #DDDDDD;">
+			<div class="mui-row mui-col-xs-6">
+				<div class="mui-col-xs-3" style="margin-top: 5px;"><button id="previous">前一天</button></div>
+				<div id="selectBegin" class="date  mui-col-xs-9" style="border: none;">
+					<div class="mui-navigate-right">开始日期:<span id="beginDate"></span></div>
+				</div>
+			</div>
+			
+			<div class="mui-row mui-col-xs-6">
+			
+			<div id="selectEnd" class="date mui-col-xs-9" >
+				<div class="mui-navigate-right">结束日期:<span id="endDate"></span></div>
+				
+			</div>
+			<div class="mui-col-xs-3" style="margin-top: 5px;">	<button id="next">后一天</button></div>
+			</div>
+			</div>
+			<div class="mui-input-row mui-select">
+							<label>产品：</label>
+							<select id="goodsCode" style="background: transparent;">
+								
+							</select> 
+						</div>
+			<div class=" tableHeader mui-row" style="">
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">日期</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">客户</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">数量</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">斤两</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">价格</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">斤单价</div>
+				
+			</div>
+			<div class="mui-scroll">
+				<ul class="mui-table-view" id="billlist" style="margin-top: 0px;margin-bottom: 80px;">
+
+				</ul>
+			</div>
+			<div class="mui-bar mui-bar-footer" style="height: 80px;">
+			<div class="mui-row" style="padding-top:10px ;">
+				<div class="mui-col-sm-6 mui-col-xs-6">总数量：<span id="num"></span></div>
+				<div class="mui-col-sm-6 mui-col-xs-6">总斤两：<span id="weight"></span></div>
+				
+			</div>
+			<div class="mui-row" >
+				<div class="mui-col-sm-6 mui-col-xs-6">总金额：<span id="sum"></span></div>
+			</div>
+		</div>
+		</div>
+
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="js/echarts.js"></script>
+		<script>
+			// 基于准备好的dom，初始化echarts实例
+			mui.init()
+			mui.plusReady(function() {
+				initGoodsList();
+				
+				initDate();
+				
+				// 使用刚指定的配置项和数据显示图表。
+
+			})
+			function initDate(){
+				qiao.on('#selectBegin','tap',function(){
+						app.selectDate($('#beginDate').text(),function(result){
+							
+							$('#beginDate').text(result);
+							initGoodsList();
+						})
+					})
+		        qiao.on('#previous','tap',function(){
+		        	var now = new Date($('#beginDate').text());
+		        	var pre = new Date(now.getTime()-1000*3600*24);
+		        	console.log(pre);
+		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
+				'-'+qiao.h.formatdate(pre.getDate());
+					$('#beginDate').text(pref);
+					var now = new Date($('#endDate').text());
+		        	var pre = new Date(now.getTime()-1000*3600*24);
+		        	console.log(pre);
+		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
+				'-'+qiao.h.formatdate(pre.getDate());
+					$('#endDate').text(pref);
+					initGoodsList();
+		        })
+		        qiao.on('#next','tap',function(){
+		        	var now = new Date($('#beginDate').text());
+		        	var pre = new Date(now.getTime()+1000*3600*24);
+		        	console.log(pre);
+		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
+				'-'+qiao.h.formatdate(pre.getDate());
+					$('#beginDate').text(pref);
+					var now = new Date($('#endDate').text());
+		        	var pre = new Date(now.getTime()+1000*3600*24);
+		        	console.log(pre);
+		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
+				'-'+qiao.h.formatdate(pre.getDate());
+					$('#endDate').text(pref);
+					initGoodsList();
+		        })
+		        qiao.on('#selectEnd','tap',function(){
+						app.selectDate($('#endDate').text(),function(result){
+							
+							$('#endDate').text(result);
+							initGoodsList();
+						})
+					})
+        
+		        var now = new Date();
+				var begindate = now.getFullYear()+'-'+qiao.h.formatdate(now.getMonth()+1)+
+				'-'+qiao.h.formatdate(now.getDate());
+				$('#beginDate').text(begindate);
+				var enddate = now.getFullYear()+'-'+qiao.h.formatdate(now.getMonth()+1)+
+				'-'+qiao.h.formatdate(now.getDate());
+				$('#endDate').text(enddate);
+			}
+			function initGoodsList(){
+				app.getData('supplier/getSupplierGoodsList.do',{client:qiao.h.getItem('loginuser'),
+				beginDate:$('#beginDate').text(),
+					endDate:$('#endDate').text()},
+				function(data){
+					var options = '';
+					data.forEach(function(item){
+						options += '<option value="'+item.goodsCode+'">'+item.goodsName+'</option>';
+					})
+					$('#goodsCode').html(options);
+					initStock($('#beginDate').text(),$('#endDate').text()
+				,qiao.h.getItem('loginuser'),$('#goodsCode').val());
+				})
+				
+				$('#goodsCode').change(function(){
+					initStock($('#beginDate').text(),$('#endDate').text()
+				,qiao.h.getItem('loginuser'),$('#goodsCode').val());
+				})
+			}
+
+			function initStock(beginDate,endDate,client,goodsCode) {
+				
+				app.getData('supplier/getSupplierSellList.do', {
+					client: client,
+					beginDate:beginDate,
+					endDate:endDate,
+					goodsCode:goodsCode
+				}, function(data) {  
+					var dataLis = '';
+					var nSum = 0;
+					var wSum = 0;
+					var sum = 0;
+					data.forEach(function(item) {
+						dataLis += '<li class="mui-row tableData"  >';
+						dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">' + item.billDate + '</div>';
+						dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">' + item.client + '</div>';
+						dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >' + item.number.toFixed(2) + '</div>';
+						dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">' + item.weight.toFixed(2) + '</div>';
+						dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >' + item.price.toFixed(2) + '</div>';
+						dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">' + item.weightPrice.toFixed(2) + '</div>';
+						
+						dataLis += '</li>';
+						nSum += item.number;
+						wSum += item.weight;
+						sum += item.number*item.price;
+
+					})  
+					$('#num').text(nSum.toFixed(2));
+					$('#weight').text(wSum.toFixed(2));
+					$('#sum').text(sum.toFixed(2));
+					if(data.length==0){  
+						dataLis = '<div style="text-align:center;margin-top:30px;font-size:24px;color:#d3d3d3">目前没有记录</div>';
+					}
+					$('#billlist').html(dataLis);
+				})
+			}
+		</script>
+
+	</body>
+
+</html>

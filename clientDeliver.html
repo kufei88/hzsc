@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/xtab.css" />
+		<link rel="stylesheet" href="css/table.css" />
+	</head>
+	<style>
+		.tableData {
+			height: 50px;
+		}
+	</style>
+	<body>
+		
+		<div class="mui-content">
+			<div class="mui-bar" style="padding: 0;">
+				<div class="container">
+				  <div class="xtab-container"  id="J_Tab">
+				  <div class="xtab-nav-container">
+				    <div class="xs-container">
+				      <ul class="xs-content">
+				        
+				      </ul>
+				    </div>
+				  </div>
+				  <div class="xtab-btn-slide"></div>
+				</div>
+				<div id="mask" style="display:none"></div>
+				</div>
+				<div class="mui-row tableHeader" >
+					<div class="mui-col-sm-3 mui-col-xs-3 textCenter">客户</div>
+					<div class="mui-col-sm-4 mui-col-xs-4 textCenter">欠款</div>
+					<div class="mui-col-sm-5 mui-col-xs-5 textCenter">信誉额度</div>
+				</div>
+			</div>
+			<div class="mui-scroll">
+			<ul class="mui-table-view" style="margin-top:80px;" id="clientList">
+				
+			</ul>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="http://g.tbcdn.cn/??kissy/k/5.0.0/seed-debug.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>  
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				var typeList = [];
+				var currentType = '全部';
+				app.getData('goods/getGoodsType.do',{operator:qiao.h.getItem('loginuser')},function(data){
+					var lis = '<li class="xtab-item">全部</li>';
+					typeList.push('全部');
+					data.forEach(function(item){
+						if(item.type != '全部物品'){
+							lis += '<li class="xtab-item">'+item.type+'</li>';
+							typeList.push(item.type);
+						}
+						
+					});
+					
+					$('.xs-content').html(lis);  
+				//	currentType = data.length>0?data[0].type:'';
+					getNotDeliverClient(currentType);          
+					require.config({
+				        packages: {
+				            "kg":{
+				                tag: "20140918",
+				                 base: "http://g.tbcdn.cn/kg/"
+				            }
+				        }
+				    });
+				   require("kg/xtab/1.0.0/index",function(XTab){
+				      var xtab = new XTab({
+				        renderTo:"#J_Tab",
+				        maskNode:"#mask",
+				        headerTitle:"选择其它类别"
+				      });
+				      xtab.render();
+				      xtab.switchTo(0);
+				      xtab.on("switch",function(e){
+				      	currentType = typeList[e.curIndex];
+				        getNotDeliverClient(typeList[e.curIndex]);
+				      })
+				      xtab.on("switchchange",function(e){
+				       
+				      })
+				    });
+				})  
+				qiao.on('#clientList li', 'tap', function(){
+					//console.log($(this).data('client'));
+					qiao.h.open('deliverList','deliverList.html',
+							{
+								client:$(this).data('client'),
+								shouldPay:$(this).data('shouldpay'),
+								debtDay:$(this).data('debtday'),
+								maxDebt:$(this).data('maxdebt'),
+								payDate:$(this).data('paydate'),
+								type:currentType
+							});
+				})
+				window.addEventListener('back',function(){
+					getNotDeliverClient(currentType);
+				})
+				window.addEventListener('reload',function(){
+					getNotDeliverClient(currentType);
+				})
+				qiao.on('.terminate','tap',function(){
+					var client = $(this).parent().parent().data('client');
+					app.getData('bill/terminateOrder.do',{client:client},function(data){
+						if(data.result == "success"){
+							mui.toast('终止成功');
+							getNotDeliverClient(currentType);
+						}
+						else{
+							mui.toast('终止失败');
+						}
+					})
+					return false;
+				})
+			});
+			function getNotDeliverClient(type){
+			
+				app.getData('bill/getNotDeliverClient.do',{type:type,operator:qiao.h.getItem('loginuser')},function(data){
+					
+					var clientList = '';
+					var area = '';
+					var count = 0;
+					  
+					data.forEach(function(item){
+						if((area !== item.area)||(area == '')){
+							area = item.area;
+							count++;
+						}    
+						clientList += '<li  class="mui-table-view-cell " data-client="'+
+						item.clientName+'" data-shouldpay="'+item.shouldPay+
+						'" data-debtday="'+item.debtDay+'" data-maxdebt="'+
+						item.maxDebt+'" data-paydate="'+item.payDate+'">'+
+						'<div class="mui-slider-right mui-disabled" >' +
+						'<a class="mui-btn mui-btn-warning terminate">终止</a>' +
+						
+						'</div>' +  
+						'<a class="mui-navigate-right mui-row tableData mui-slider-handle" style="'+(count %2 ==0 ?'background:#ddd;':'')+
+						'"><div class="mui-col-sm-3 mui-col-xs-3 textCenter">'+item.clientName+
+						'</div><div class="mui-col-sm-4 mui-col-xs-4 textCenter">'+item.shouldPay.toFixed(2)+'--'+item.debtDay+'</div>'
+						+'<div class="mui-col-sm-5 mui-col-xs-5 textCenter">'+item.maxDebt.toFixed(2)+'--'+item.payDate+'</div></a></li>';
+					})
+					$('#clientList').html(clientList);
+				})
+				
+			}
+			
+		</script>
+	</body>
+
+</html>

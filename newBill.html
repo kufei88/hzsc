@@ -1,0 +1,666 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/table.css" />
+		<link rel="stylesheet" href="css/close.css" />
+	</head>
+	<style>
+		.righttext {
+			float: right;
+			padding-right: 20px;
+		}
+		#popover {
+				position: fixed;
+				min-width: 282px;
+				height: 360px;
+				top: 100px !important;
+				
+				left: 50% !important;
+				margin-left: -141px;
+			}
+			
+			.operate {
+				text-align: center;
+				margin-top: 20px
+			}
+			.tapRow{
+			height: 70px;
+			line-height: 70px; 
+			padding-top: 0;
+		}
+		#popoverSum {
+			position: fixed;
+			min-width: 282px;
+			height: 200px;
+			top: 300px !important;
+			left: 50% !important;
+			margin-left: -141px;
+		}
+		.add-bill-btn {
+			position: fixed;
+			right: 15px;
+			bottom: 80px;
+			display: block;
+			width: 52px;
+			height: 52px;
+			z-index: 9999;
+			background-color: #ef6f7a;
+			border-radius: 33px;
+			border: 1px solid #ef6f7a;
+			color: white;
+			text-align: center;
+		}
+		
+		.add-bill-btn span {
+			font-size: 20px;
+			line-height: 50px;
+		}
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header" >
+			<h1 id="title" class="mui-title">开新单</h1>
+			<!--
+            	作者：117672825@qq.com
+            	时间：2018-09-17
+            	描述：
+            
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			-->
+			<button type="button" id="btnSell" 
+				class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
+				保存
+			</button>
+		</header>
+		<div class="mui-content">
+			
+			<div class="mui-card" style="margin-bottom: 25px;">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell  mui-left tapRow" id="selectClient">
+						<div class="mui-navigate-right">客户:
+							<span id="resultClient" class="righttext"></span></div>
+					</li>
+
+				</ul>
+			</div>
+
+			<div class="mui-card" style="margin-bottom: 5px;">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell  mui-left tapRow">
+						<div class="mui-slider-right mui-disabled" id="cleargoodsParent">
+							<a class="mui-btn mui-btn-red " id="cleargoods">清空</a>
+						</div>
+						<div class="mui-slider-handle" id="selectGoods">
+							<div class="mui-navigate-right">选择商品
+								<span id="sum" class="righttext"></span>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			
+			<div id="popover" class="mui-popover">
+
+				<div class="mui-content-padded">
+					<div style="padding: 0 1em;text-align:center" id="goodsname">
+	
+					</div>
+					<span class="closeSum" id="closeNumber">+</span>
+					<form class="mui-input-group" style="margin-top: 10px;" id="selectform">
+						<div class="mui-input-row">
+							<label>数量：</label>
+							<input type="number" class="mui-input"  id="number" placeholder="请输入数量">
+						</div>
+						
+						<div class="mui-input-row">
+							<label>斤两：</label>
+							<input type="number" class="mui-input"  id="weight" placeholder="请输入斤两">
+						</div>
+						<div class="mui-input-row">
+							<label>售价：</label>
+							<input type="number" class="mui-input" id="price" placeholder="请输入售价">
+						</div>
+						<div class="mui-input-row">
+							<label>单位：</label>
+							<input type="text" class="mui-input" id="unit" readonly="readonly">
+						</div>
+						<div class="mui-input-row">
+							<label>金额：</label>
+							<input type="text" class="mui-input" id="money" readonly="readonly">
+						</div>
+						<div class="mui-input-row">
+							<label>备注：</label>
+							<input type="text" class="mui-input" id="remark" >
+						</div>
+					</form>
+					<div id="add_div" class="operate ">
+						<button type="button"  class="mui-btn mui-btn-blue mui-btn-block" id="add">确定</button>
+						
+					</div>
+	
+				</div>
+			</div>
+			
+			<div id="popoverSum" class="mui-popover">
+
+				<div class="mui-content-padded">
+					<div style="padding: 0 1em;text-align:center" >
+						结算
+					</div>
+					<span class="closeSum" id="closeSum">+</span>
+					<form class="mui-input-group" style="margin-top: 10px;" id="selectform">
+						<div class="mui-input-row">
+							<label style="width: 60%;">金额：</label>
+							<input style="width: 40%;" type="number" class="mui-input clearZero" id="totalSum" readonly="readonly">
+						</div>
+
+						<div class="mui-input-row ">
+							<label  style="width: 60%;">优惠后金额：</label>
+							<input style="width: 40%;" type="number" class="mui-input clearZero" id="discount" placeholder="请输入金额">
+						</div>
+						
+					</form>
+					<div id="add_div" class="operate ">
+						<button type="button" class="mui-btn mui-btn-blue mui-btn-block" id="btnSave">确定</button>
+
+					</div>
+
+				</div>
+			</div>
+
+			<div class="mui-card">
+				<ul class="mui-table-view" id="goodsList">
+
+				</ul>
+			</div>
+			<a href="#" class="add-bill-btn" id="entrySell">
+
+				<span>挂单</span>
+	
+			</a>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="js/qiao.h.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			var tableName = 'hzscnewbill4';
+			var enrtySellTableName = 'enrtySellTableName1';
+			var currentId = '';
+			var oldBillCode = '';
+			var totalNum = 0;
+			var billDate = '';
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				oldBillCode = self.billCode;
+				billDate = self.billDate;
+				console.log(self.client);  
+				if(billDate){
+					
+					$('#resultClient').text(self.client);
+					qiao.h.insertItem('newbillclient',''+self.client);
+					
+					enrtySellBack();
+				}
+				
+				if(qiao.h.getItem('newbillclient')){
+					$('#resultClient').text(qiao.h.getItem('newbillclient'));
+				}
+				
+				initBillCode(oldBillCode);
+				initEvent();
+				initData(oldBillCode);
+				window.addEventListener('selectClient', function(event) {
+					//console.log(JSON.stringify(event.detail.selectClient));
+					
+					$('#resultClient').text(event.detail.selectClient);
+					qiao.h.insertItem('newbillclient',''+event.detail.selectClient);
+					
+				})    
+				
+				function enrtySellBack(){
+					qiao.h.update(db,'delete from '+tableName,function(){
+						var sql = ' insert into '+tableName+'(goodsCode,goodsName,price,number,weight,unit,'+
+						'type,storage,remark,batch) select goodsCode,goodsName,price,number,weight,unit,'+
+						'type,storage,remark,batch from '+enrtySellTableName+' where billDate="'+billDate+'"';
+						qiao.h.update(db,sql,function(){
+							initSum();
+						})
+					})
+					
+				}
+				
+				window.addEventListener('enrtySellBack',function(event){
+					$('#resultClient').text(event.detail.client);
+					billDate = event.detail.billDate;
+					qiao.h.insertItem('newbillclient',''+event.detail.client);
+					var sql = 'insert into '+tableName+'(goodsCode,goodsName,price,number,weight,unit,'+
+					'type,storage,remark,batch) select goodsCode,goodsName,price,number,weight,unit,'+
+					'type,storage,remark,batch from '+enrtySellTableName+' where billDate="'+event.detail.billDate+'"';
+					qiao.h.update(db,sql,function(){
+						initSum();
+					})
+				})
+				
+				qiao.on('#entrySell','tap',function(){
+					var now = new Date();
+					if(billDate){
+						qiao.h.update(db,'delete from '+enrtySellTableName+' where billDate="'+billDate+'"',function(){
+							var sql = 'insert into '+enrtySellTableName+'(goodsCode,goodsName,price,number,weight,unit,type,storage,remark,client,billDate,batch) '+
+							'select goodsCode,goodsName,price,number,weight,unit,type,storage,'+
+							'remark,"'+$('#resultClient').text()+'" as client,"'+billDate+'" as billDate,batch from '+tableName;
+							console.log(sql);
+							qiao.h.update(db,sql,function(){
+								//qiao.h.open('entrySellList','entrySellList.html');
+								qiao.h.fire('entrySellList.html','reload',{});
+								
+								
+								clear(true);
+								window.history.back();
+								mui.back();
+							})
+						})
+					}else{
+						var billDate1 = qiao.h.formatdate(now.getMonth() + 1) +
+						'-' + qiao.h.formatdate(now.getDate())+' '+qiao.h.formatdate(now.getHours())+':'+
+						qiao.h.formatdate(now.getMinutes())+':'+qiao.h.formatdate(now.getSeconds());
+						var sql = 'insert into '+enrtySellTableName+'(goodsCode,goodsName,price,number,weight,unit,type,storage,remark,client,billDate,batch) '+
+						'select goodsCode,goodsName,price,number,weight,unit,type,storage,'+
+						'remark,"'+$('#resultClient').text()+'" as client,"'+billDate1+'" as billDate,batch from '+tableName;
+						qiao.h.update(db,sql,function(){
+							qiao.h.fire('entrySellList.html','reload',{});
+							
+							clear(true);
+							//console.log(window.history.length);
+							window.history.back();
+							mui.back();
+							//setTimeout(function(){
+								//	mui.back();
+							//	},100);
+						})
+					}
+					
+				})
+				
+				qiao.on('#btnSave','tap', function() {
+					 
+					mui("#popoverSum").popover("toggle");
+					qiao.h.update(db,'select * from '+tableName,function(data){
+						if(data.rows.length ==0){
+							mui.toast('请先选择商品');
+							return;
+						}
+						var jsonArray = [];
+						var sum = 0;
+						for(var i=0;i<data.rows.length;i++){
+							var jsonobject = {};
+							jsonobject.sourceCode = '';
+							jsonobject.goodsCode = data.rows.item(i)['goodsCode'];
+							jsonobject.weight = data.rows.item(i)['weight'];
+							jsonobject.unit = data.rows.item(i)['unit'];
+							jsonobject.number = data.rows.item(i)['number'];
+							jsonobject.price = data.rows.item(i)['price'];
+							jsonobject.storage = data.rows.item(i)['storage'];
+							jsonobject.remark = data.rows.item(i)['remark'];
+							jsonobject.batch = data.rows.item(i)['batch'];
+							jsonobject.sourceId = 0;
+							sum += (data.rows.item(i)['weight']>0?data.rows.item(i)['weight']*data.rows.item(i)['price']:data.rows.item(i)['number']*data.rows.item(i)['price'])
+							jsonArray.push(jsonobject);
+						}
+						var jsona = {};
+						jsona.goods = jsonArray;
+						jsona.client = $('#resultClient').text()?$('#resultClient').text():"散客";
+						jsona.sum = sum;
+						jsona.discount = $('#discount').val();
+						jsona.operator = qiao.h.getItem('loginuser');
+						jsona.billCode = $('#billcode').text();
+						jsona.print = qiao.h.getItem('销售打印服务器上的样式');
+						jsona.printReport = qiao.h.getItem('销售服务器上的打印样式');
+						jsona.databaseName = qiao.h.getItem('销售服务器上的打印样式');
+						if(oldBillCode){
+							app.postData('bill/editSell.do',{jsonstr:JSON.stringify(jsona)},function(data){
+							if(data.result =='success'){
+								mui.toast('保存成功');
+								clear();
+								qiao.h.fire('report.html','editBack',{});
+								mui.back();
+							}
+						})
+						}
+						else{
+							app.postData('bill/saveSell.do',{jsonstr:JSON.stringify(jsona)},function(data){
+							if(data.result =='success'){
+								mui.toast('保存成功');
+								clear();
+								printBill(data.result1);
+								
+								  
+								
+								window.history.back();
+								mui.back();
+							}
+							else if (data.result == 'clientMaxDebt'){
+								mui.toast('该客户已超出最大欠款');
+							}
+							else if (data.result == 'payOutDate'){
+										mui.toast('该客户已超出欠款最后期限');
+									}
+							else if (data.result == 'clientMaxDebtHint'){
+								mui.toast('保存成功，但该客户已超出最大欠款，请注意结款','long');
+								clear();
+								printBill(data.result1);
+							}
+							else if (data.result == 'handleMaxDebt'){
+								mui.toast('该经手人已超出最大欠款');
+							}
+							else if (data.result == 'handleMaxDebtHint'){
+								mui.toast('保存成功，但该经手人已超出最大欠款，请注意结款','long');
+								clear();
+								printBill(data.result1);
+							}
+						})
+						}
+						      
+					})  
+				})
+				  
+				function printBill(billCode){
+					if(qiao.h.getItem('开单后打印') == 'true'){
+						qiao.h.print('\r\n\r\n\r\n\r\n你的单据号是:'+billCode+'\r\n'+'请拿此单据到收银台付款\r\n',
+						billCode.replace(/-/g,'').replace('XS','')+'\r\n');
+					}
+					else{
+						mui.alert('刚刚保存的单据编码是:'+billCode);
+					}
+				}
+				
+				function clear(entry){
+					qiao.h.update(db,'delete from '+tableName,function(){
+						initSum();
+						initBillCode();
+						$('#resultClient').text('');
+						qiao.h.insertItem('newbillclient','');
+						var tempTable = [];
+						if(!entry){
+							qiao.h.update(db,'delete from '+enrtySellTableName+' where billDate="'+billDate+'"',function(){
+							qiao.h.fire('entrySellList.html','reload',{});
+						});
+						}
+						
+						billDate = '';
+						qiao.h.insertItem('newBill.htmltempTable',JSON.stringify(tempTable));
+					})
+				}
+
+				function initEvent() {
+					qiao.on('#closeSum','tap',function(){
+						mui("#popoverSum").popover("toggle");
+					})
+					qiao.on('#closeNumber','tap',function(){
+						mui("#popover").popover("toggle");
+					})
+					qiao.on('#selectClient', 'tap', function() {
+						qiao.h.insertItem('clientOpenBy','newBill.html');
+						qiao.h.insertItem('selectClientType', '');
+						qiao.h.open('clientList', 'clientList.html');
+					})
+					qiao.on('#selectGoods', 'tap', function() {
+						qiao.h.open('stock', 'stock.html', {
+							showHeader: true,
+							openBy:'newBill.html'
+						});
+					})
+					window.addEventListener('addGoodsBack',function(event){
+						
+						qiao.h.update(db,'insert into '+tableName+' (goodsCode,goodsName,price,number,weight,unit,type,storage,remark,batch) values ('+
+						'"'+event.detail.goodsCode+'","'+event.detail.goodsName+'","'+event.detail.price+'","'+event.detail.number+'","'+
+						event.detail.weight+'","'+event.detail.unit+'","'+event.detail.type+'","'+
+						event.detail.storage+'","'+event.detail.remark+'","'+event.detail.batch+'")',function(){
+							
+							initSum();
+						})
+					})
+					qiao.on('#cleargoods','tap',function(){
+						qiao.h.update(db,'delete from '+tableName,function(){
+							initSum();
+							var tempTable = [];
+							qiao.h.insertItem('newBill.htmltempTable',JSON.stringify(tempTable));
+							
+						})
+					})
+					qiao.on('.delBtn','tap',function(event){
+						var _this = $(this).parent().parent();
+						
+						//console.log(JSON.stringify(_this.data('id')));
+						qiao.h.update(db,'delete from '+tableName+' where id='+_this.data('id'),function(){
+							initSum();
+							var index = -1;
+							var tempTable = JSON.parse(qiao.h.getItem('newBill.htmltempTable'));
+							for(var i=0;i<tempTable.length;i++){
+								//console.log(tempTable[i].goodsCode);
+								//console.log(_this.data('goodscode'));
+								//console.log(tempTable[i].storage);
+								//console.log(_this.data('storage'));
+								if ((tempTable[i].goodsCode == _this.data('goodscode'))&&
+									(tempTable[i].storage == _this.data('storage'))){
+									index =i;
+									break;
+								}
+							}
+							//console.log(index);
+							if (index > -1){
+								tempTable.splice(index,1);
+								qiao.h.insertItem('newBill.htmltempTable',JSON.stringify(tempTable));
+							}
+						})
+					})
+					qiao.on('.editBtn','tap',function(event){
+						var _this = $(this).parent().parent();
+						console.log(JSON.stringify(_this.data()));
+						currentId = _this.data('id');
+						$('#goodsname').html(_this.data('goodsname'));
+						
+						$('#number').val(_this.data('number'));
+						$('#weight').val(_this.data('weight'));
+						$('#unit').val(_this.data('unit'));
+						$('#price').val(_this.data('price'));
+						$('#remark').val(_this.data('remark'));
+						$('#money').val(_this.data('weight')>0?(_this.data('weight')*_this.data('price')).toFixed(2)
+						:(_this.data('price')*_this.data('number')).toFixed(2));
+						
+						
+						mui("#popover").popover("toggle");
+						setTimeout(function(){
+							document.getElementById('number').focus();
+						},100)
+						
+						
+					})
+					
+					qiao.on('#cancel','tap',function(){
+						mui("#popover").popover("toggle");
+					})
+					
+					qiao.on('#number', 'input', autocalc);
+					qiao.on('#price', 'input', autocalc);
+					qiao.on('#weight', 'input', autocalc);
+					
+					qiao.on('#add','tap',function(){
+						if(!$('#number').val()){
+							mui.toast('数量不能为0');
+							return;
+						}
+						qiao.h.update(db,'update '+tableName+' set number="'+$('#number').val()+'",weight="'+
+						$('#weight').val()+'",price="'+$('#price').val()+'",remark="'+$('#remark').val()+'" where id='+currentId,function(){
+							initSum();
+						})
+						mui("#popover").popover("toggle");
+					})
+					
+					qiao.on('#btnback','tap',function(){
+						clear(true);
+						mui.back();
+					})
+					            
+					qiao.on('#btnSell', 'tap',function(){
+						//qiao.h.print('1234\n12345\n');
+						console.log(111);      
+						/*
+						if(!$('#resultClient').text()){
+							mui.toast('请选择客户');
+							return;
+						} */
+						if(totalNum == 0){
+							mui.toast('请先选择商品');
+							return;
+						}
+						mui("#popoverSum").popover("toggle");
+					})
+				}
+				
+				function autocalc() {
+					var tempStr = $(this).val();
+	
+					if((tempStr.length > 1) && (tempStr.charAt(0) == '0')&&(tempStr.charAt(1) != '.')) {
+						$(this).val(tempStr.substring(1));
+	
+					}
+					$('#money').val($('#weight').val()>0?($('#weight').val()*$('#price').val()).toFixed(2):($('#number').val() * $('#price').val()).toFixed(2));
+				}
+
+				function initData(billCode) {
+					var help = qiao.h.getItem('hzscnewbillhelp');
+
+					var createsql = 'create table if not exists ' + tableName + ' (id integer primary key AutoIncrement';
+					createsql += ',goodsCode,goodsName,price,number,weight,unit,type,storage,remark,batch';
+					createsql += ')';
+					var createEntryTableSql = 'create table if not exists ' + enrtySellTableName + ' (id integer primary key AutoIncrement';
+					createEntryTableSql += ',goodsCode,goodsName,price,number,weight,unit,type,storage,remark,client,billDate,batch';
+					createEntryTableSql += ')';
+					//console.log(createsql);
+					//if(help == null){
+					
+						qiao.h.update(db, createsql, function() {
+							if(billCode){
+								qiao.h.update(db,'delete from '+tableName,function(){
+									app.getData('bill/getSellListByCode.do', {billCode:billCode},function(data){
+										var insertSql = 'insert into '+tableName +
+										' (goodsCode,goodsName,price,number,weight,unit,type,storage) values ';
+										data.forEach(function(item){
+											$('#resultClient').text(item.client);
+											insertSql += '("'+item.goodsCode+'","'+item.goodsName+'","'
+											+item.price+'","'+item.number+'","'+item.weight+
+											'","'+item.unit+'","'+item.type+'","'+item.storage+'"),';
+										})
+										qiao.h.update(db,insertSql.substring(0,insertSql.length-1),function(){
+											initSum()
+										})
+									})
+									
+									
+								})
+								
+							}
+							else{
+								initSum();  
+							}
+							
+						});
+						qiao.h.update(db,createEntryTableSql,function(){
+							
+						})
+					
+					//}
+
+				};
+				
+				function initSum(){
+					qiao.h.query(db,'select * from '+tableName,function(data){
+						var lis = '<li class="mui-row tableHeader">';
+						lis += '<div class="mui-col-sm-4 mui-col-xs-4 textCenter">名称</div>';
+						
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">数量</div>';
+
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">斤两</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">单价</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">金额</div>';
+						lis += '</li>';
+						
+						
+						var sum =0;
+						totalNum = 0;
+						for(i=0;i<data.rows.length;i++){
+							lis += genSqlli(data.rows.item(i))
+							totalNum += data.rows.item(i).number;
+							
+							sum += (data.rows.item(i).weight>0?data.rows.item(i).weight*data.rows.item(i).price:data.rows.item(i).number*data.rows.item(i).price);
+						}
+						$('#sum').text('总金额:'+sum.toFixed(2));
+						$('#totalSum').val(sum.toFixed(2));
+						$('#discount').val(sum.toFixed(2));
+						$('#goodsList').html(lis);
+					})
+				}
+				
+				function genSqlli(item){
+					var goodsLis = '';
+					
+					
+					goodsLis += '<li class="mui-table-view-cell" ';
+					goodsLis += ' data-id="'+item.id+'" ';
+					goodsLis += 'data-storage="'+item.storage+'" ';
+					goodsLis += 'data-goodscode="'+item.goodsCode+'" ';
+					goodsLis += 'data-goodsname="'+item.goodsName+'" ';
+					goodsLis += 'data-price="'+item.price+'" ';
+					goodsLis += 'data-number="'+item.number+'" ';  
+					goodsLis += 'data-weight="'+item.weight+'" ';
+					goodsLis += 'data-unit="'+item.unit+'" ';
+					goodsLis += 'data-remark="'+item.remark+'" ';
+					goodsLis += '>';
+					goodsLis += '<div class="mui-slider-right mui-disabled" data-ll="lll">' +
+					'<a class="mui-btn mui-btn-red editBtn">修改</a>' +
+					'<a class="mui-btn mui-btn-blue delBtn" >删除</a>' +
+					'</div>' +
+					
+					'<div class="mui-slider-handle mui-row tableData" style="padding:0">' ;
+					goodsLis += '<div class="mui-col-sm-4 mui-col-xs-4 textCenter">'+item.goodsName+(item.batch?'('+item.batch+')':'') +'</div>';
+					
+					goodsLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+item.number+'</div>';
+					goodsLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+(item.weight>0?item.weight:'')+'</div>';
+					goodsLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+item.price+'</div>';
+					goodsLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+(item.weight>0?(item.weight*item.price).toFixed(2):(item.number*item.price).toFixed(2))+'</div>';
+					goodsLis += '<div style="right:10px;position:absolute;bottom:-10px;color:green">'+item.remark+'</div>'
+					goodsLis += '</div>';
+					goodsLis += '</li>';
+					
+					return goodsLis;
+				}
+
+				function initBillCode(billCode) {
+					if(billCode){
+						$('#billcode').text(billCode);
+					}
+					else{
+						app.getData('bill/getBillCode.do', {
+							type: '销售编码',
+							operator: qiao.h.getItem('loginuser')
+						},
+						function(data) {
+							$('#billcode').text(data.result);
+						})
+					}
+					
+				}
+			})
+		</script>
+	</body>
+
+</html>

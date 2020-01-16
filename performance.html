@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+	</head>
+	<style>
+		.tableHeader{
+			padding: 10px;
+			background: #DDDDDD;
+		}
+		.headerTitle{
+			
+		}
+		.dataList{
+			padding: 10px;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header" >
+			<h1 id="title" class="mui-title">我的业绩</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			
+		</header>
+		<div class="mui-content">
+			<div class="mui-row">
+		        <div class="mui-col-sm-6 mui-col-xs-12 mui-table-view-cell">
+		            
+		                <a class="mui-navigate-right mui-row" id="selectBegin">
+		                    	<div class="mui-col-sm-6">开始日期</div>   
+		                    	<div class="mui-col-sm-6" id="beginDate">2018-01-01</div>
+		                </a>
+		            
+		        </div>
+		        <div class="mui-col-sm-6 mui-col-xs-12 mui-table-view-cell">
+		           
+		                <a class="mui-navigate-right mui-row" id="selectEnd">
+		                    	<div class="mui-col-sm-6">结束日期</div>   
+		                    	<div class="mui-col-sm-6" id="endDate">2018-01-01</div>
+		                </a>
+		            
+		        </div>
+		    </div>
+			<div class="mui-scroll">
+			<ul class="mui-table-view"  id="billlist">
+				
+			</ul>
+			</div>
+		</div>
+		<div class="mui-bar mui-bar-footer mui-row" style="padding: 10px;">
+			<div class="mui-col-sm-8 mui-col-xs-8">合计:</div>
+			<div class="mui-col-sm-4 mui-col-xs-4" style="text-align:center" id="shouldPaySum"></div>
+			
+			
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>  
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				initEvent();
+				$('#beginDate').text(app.getNowDate());
+				$('#endDate').text(app.getNowDate());
+				search($('#beginDate').text(),$('#endDate').text());
+				function initEvent(){
+					qiao.on('#selectBegin','tap',function(){
+						app.selectDate($('#beginDate').text(),function(result){
+							$('#beginDate').text(result);
+							search($('#beginDate').text(),$('#endDate').text());
+						})
+					})
+					qiao.on('#selectEnd','tap',function(){
+						app.selectDate($('#endDate').text(),function(result){
+							$('#endDate').text(result);
+							search($('#beginDate').text(),$('#endDate').text());
+						})
+					})
+				}
+				function search(beginDate,endDate){
+					var headLi = '';
+					headLi += '<li class="tableHeader">';
+					headLi += '<div class="mui-row">';
+					headLi += '<div class="mui-col-sm-8 mui-col-xs-8">客户</div>';
+					headLi += '<div class="mui-col-sm-4 mui-col-xs-4" style="text-align:center">业绩</div>';
+					
+					headLi += '</div>';
+					headLi += '</li>';
+					var dataLis = '';  
+					var shouldPaySum = 0;
+					var paySum = 0;
+					app.getData('bill/getPerformance.do',{operator:qiao.h.getItem('loginuser'),
+					beginDate:beginDate,endDate:endDate},function(data){
+						data.forEach(function(item){
+							dataLis += '<li class="dataList">';
+							dataLis += '<div class="mui-row">';
+							dataLis += '<div class="mui-col-sm-8 mui-col-xs-8">'+item.client+'</div>';
+							dataLis += '<div class="mui-col-sm-4 mui-col-xs-4" style="text-align:center">'+item.shouldPay.toFixed(2)+'</div>';
+							
+							dataLis += '</div>';
+							dataLis += '</li>';
+							shouldPaySum += item.shouldPay;
+							
+						})
+						$('#billlist').html(headLi+dataLis);
+						$('#shouldPaySum').text(shouldPaySum.toFixed(2));
+						
+					})
+				}
+				
+				qiao.on('#btnback','tap',function(){
+					mui.back();
+				})
+			})
+		</script>
+	</body>
+
+</html>

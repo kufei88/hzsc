@@ -1,0 +1,689 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/close.css" />
+		<link rel="stylesheet" href="css/table.css" />
+	</head>
+	<style>
+		#popover {
+			position: fixed;
+			min-width: 282px;
+			height: 430px;
+			top: 100px !important;
+			left: 50% !important;
+			margin-left: -141px;
+		}
+		
+		#popoverSum {
+			position: fixed;
+			min-width: 282px;
+			height: 200px;
+			top: 300px !important;
+			left: 50% !important;
+			margin-left: -141px;
+		}
+		
+		.operate {
+			margin-top: 5px;
+		}
+		
+		#inputForm label {
+			width: 40%;
+		}
+		
+		#inputForm input {
+			width: 60%;
+		}
+		
+		.add-bill-btn {
+			position: fixed;
+			right: 15px;
+			bottom: 80px;
+			display: block;
+			width: 52px;
+			height: 52px;
+			z-index: 9999;
+			background-color: #ef6f7a;
+			border-radius: 33px;
+			border: 1px solid #ef6f7a;
+			color: white;
+			text-align: center;
+		}
+		
+		.add-bill-btn span {
+			font-size: 50px;
+			line-height: 50px;
+		}
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">发货清单</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			<button type="button" id="btnok" class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
+				保存
+			</button>
+		</header>
+		<div class="mui-content">
+			<!--下拉刷新容器-->
+			<div class="mui-content-padded">
+				<h4 id="goodsTitle"></h4>
+			</div>
+			<div class="mui-scroll">
+				<ul class="mui-table-view mui-table-view-chevron" style="margin-top:0;" id="goodsList">
+
+				</ul>
+			</div>
+
+			<div id="popover" class="mui-popover">
+
+				<div class="mui-content-padded">
+					<div style="padding: 0 1em;text-align:center" id="goodsname">
+
+					</div>
+					<span class="close">+</span>
+					<form class="mui-input-group" style="margin-top: 10px;" id="inputForm">
+						<div class="mui-input-row">
+							<label>订量：</label>
+							<input type="text" class="mui-input" id="orderNumber" readonly="readonly">
+						</div>
+						<div class="mui-input-row">
+							<label style="width: 40%;">已发量：</label>
+							<input style="width: 60%;" type="text" class="mui-input" id="sellNumber" readonly="readonly">
+						</div>
+						<div class="mui-input-row">
+							<label>数量：</label>
+							<input type="number" class="mui-input clearZero" id="number" placeholder="请输入数量">
+						</div>
+
+						<div class="mui-input-row">
+							<label>斤两：</label>
+							<input type="number" class="mui-input clearZero" id="weight" placeholder="请输入斤两">
+						</div>
+						<div class="mui-input-row">
+							<label>售价：</label>
+							<input type="number" class="mui-input clearZero" id="price" placeholder="请输入售价">
+						</div>
+						<div class="mui-input-row">
+							<label>单位：</label>
+							<input type="text" class="mui-input" id="unit" readonly="readonly">
+						</div>
+						<div class="mui-input-row">
+							<label>金额：</label>
+							<input type="text" class="mui-input" id="money" readonly="readonly">
+						</div>
+						<div class="mui-input-row">
+							<label>备注：</label>
+							<input type="text" class="mui-input" id="remark">
+						</div>
+					</form>
+					<div id="add_div" class="operate ">
+						<button type="button" class="mui-btn mui-btn-blue mui-btn-block" id="add">确定</button>
+
+					</div>
+
+				</div>
+			</div>
+			<div id="popoverSum" class="mui-popover">
+
+				<div class="mui-content-padded">
+					<div style="padding: 0 1em;text-align:center">
+						结算
+					</div>
+					<span class="closeSum">+</span>
+					<form class="mui-input-group" style="margin-top: 10px;" id="selectform">
+						<div class="mui-input-row">
+							<label style="width: 60%;">金额：</label>
+							<input style="width: 40%;" type="number" class="mui-input clearZero" id="totalSum" readonly="readonly">
+						</div>
+
+						<div class="mui-input-row ">
+							<label style="width: 60%;">优惠后金额：</label>
+							<input style="width: 40%;" type="number" class="mui-input clearZero" id="discount" placeholder="请输入金额">
+						</div>
+
+					</form>
+					<div id="add_div" class="operate ">
+						<button type="button" class="mui-btn mui-btn-blue mui-btn-block" id="btnSave">确定</button>
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<a href="#" class="add-bill-btn" id="addOrder">
+
+			<span>+</span>
+
+		</a>
+		<div class="mui-bar mui-bar-footer" style="height: 40px;">
+			<div class="mui-row" style="padding-top:10px ;">
+				<div class="mui-col-sm-4 mui-col-xs-4"><span id="num"></span></div>
+				<div class="mui-col-sm-4 mui-col-xs-4"><span id="weight"></span></div>
+				<div class="mui-col-sm-4 mui-col-xs-4">总金额：<span id="sum"></span></div>
+			</div>
+		</div>
+		<script src="js/mui.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="js/qiao.h.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var tableName = 'hzscsellgoodslist7';
+			var currentId = '';
+			var client = '';
+			var realprice = '0';
+			var selectGoodsCode = '';
+			var totalNum = 0;
+			var currentRemark = '';
+			var modify = false;
+			var oldData = {};
+			var billCode = '';
+			var business = false;
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				modify = self.modify;
+				oldData = self.oldData;
+				client = self.client;
+				var shouldPay = self.shouldPay;
+				var debtDay = self.debtDay;
+				var maxDebt = self.maxDebt;
+				var payDate = self.payDate;
+				var title = '客户:' + client;
+				title += (shouldPay>maxDebt&&maxDebt>0)?'<span style="margin-left:20px;color:red">已超额</span>':'';
+				title += (debtDay>payDate&&payDate>0)?'<span style="margin-left:20px;color:red">已超期</span>':'';
+				$('#goodsTitle').html(title);
+				var type = self.type;
+				initData();
+				initEvent();
+				document.getElementById('btnback').addEventListener('tap', function() {
+					mui.back();
+
+				})
+
+				function getDeliverList(aclient, atype) {
+					qiao.h.update(db, 'delete from ' + tableName, function() {
+						if(oldData) {
+							billCode = oldData[0].billCode;
+							console.log(JSON.stringify(oldData));
+							oldData.forEach(function(item) {
+								console.log(item.orderNumber);
+								qiao.h.update(db, 'insert into ' + tableName + '(billCode,goodsCode,goodsName,' +
+									'orderNumber,sellNumber,orderWeight,sellWeight,' +
+									'price,number,weight,unit,sourceId,storage,remark)' +
+									' values ("' + item.sourceCode + '","' + item.goodsCode + '","' + item.goodsName +
+									'","' + (-(item.orderNumber?item.orderNumber:0)) + '","' +
+									'0' + '","' + (item.orderWeight?item.orderWeight:0)+ '","' + '0' + '","' +
+									(-item.weightPrice) + '","' + (-item.number) + '","' + (-item.weight) + '","' + item.unit + '","' + item.sourceSerial + '","' + item.storage + '","' + item.remark + '")');
+								qiao.h.delItem(item.sourceCode + item.sourceSerial + 'remark');
+								qiao.h.delItem(item.sourceCode + item.sourceSerial + 'price');
+								qiao.h.delItem(item.sourceCode + item.sourceSerial + 'number');
+								qiao.h.delItem(item.sourceCode + item.sourceSerial + 'weight');
+								//qiao.h.insertItem(item.sourceCode + item.sourceSerial + 'remark', item.remark);
+
+								//qiao.h.insertItem(item.sourceCode + item.sourceSerial + 'price', -item.weightPrice + '');
+								//qiao.h.insertItem(item.sourceCode + item.sourceSerial + 'number', -item.number + '');
+								//qiao.h.insertItem(item.sourceCode + item.sourceSerial + 'weight', -item.weight + '');
+
+							})
+							initListByDatabase();
+						} else {
+							app.getData('bill/getDeliverList.do', {
+								type: atype,
+								client: aclient,
+								operator: qiao.h.getItem('loginuser')
+							}, function(data) {
+								console.log(JSON.stringify(data));
+								var goodsLis = '';
+								data.forEach(function(item) {
+
+									//goodsLis += genli(item);
+									var number = 0;
+									var weight = 0;
+									var price = item.stockGoodsPrice;
+									if(qiao.h.getItem(item.barcode + item.payment + 'price')) {
+
+										price = qiao.h.getItem(item.barcode + item.payment + 'price');
+									}
+									
+									if(qiao.h.getItem(item.barcode + item.payment + 'number')) {
+										
+										number = qiao.h.getItem(item.barcode + item.payment + 'number');
+									}
+									if(qiao.h.getItem(item.barcode + item.payment + 'weight')) {
+
+										weight = qiao.h.getItem(item.barcode + item.payment + 'weight');
+									}
+									qiao.h.update(db, 'insert into ' + tableName + '(billCode,goodsCode,goodsName,orderNumber,sellNumber,orderWeight,sellWeight,' +
+										'price,number,weight,unit,sourceId,storage,remark)' +
+										' values ("' + item.barcode + '","' + item.goodCode + '","' + item.area + item.stockGoodsName + '","' + item.stockGoodsNum + '","' +
+										item.sellNum + '","' + item.weight + '","' + item.sellWeight + '","' +
+										price + '","' + number + '","' + weight + '","' + item.unit + '","' + item.payment + '","' + item.storage + '","' + item.remark + '")');
+
+								/*	if(!qiao.h.getItem(item.barcode + item.goodCode + 'remark')) {
+
+										qiao.h.insertItem(item.barcode + item.goodCode + 'remark', item.remark);
+									}
+
+									if(!qiao.h.getItem(item.barcode + item.goodCode + 'price')) {
+
+										qiao.h.insertItem(item.barcode + item.goodCode + 'price', item.stockGoodsPrice + '');
+									} */
+									/*
+									if(!qiao.h.getItem(item.barcode+item.goodCode+'number')){
+										console.log(qiao.h.getItem(item.barcode+item.goodCode+'number'));
+										qiao.h.insertItem(item.barcode+item.goodCode+'number',(item.stockGoodsNum-item.sellNum)+'');
+									}
+									if(!qiao.h.getItem(item.barcode+item.goodCode+'weight')){
+										
+										qiao.h.insertItem(item.barcode+item.goodCode+'weight',(item.weight-item.sellWeight)+'');
+									}
+									*/
+								})
+								//$('#goodsList').html(goodsLis);
+								initListByDatabase();
+
+							})
+						}
+
+					})
+				}
+
+				function initListByDatabase() {
+					qiao.h.query(db, 'select * from ' + tableName, function(data) {
+
+						var lis = '<li class="mui-row tableHeader">';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">名称</div>';
+						lis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">订量</div>';
+						lis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">发量</div>';
+
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">单价</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">金额</div>';
+						lis += '</li>';
+						var sum = 0;
+						totalNum = 0;
+						var billCode = '';
+						var count = 0;
+						for(i = 0; i < data.rows.length; i++) {
+							if((billCode == '') || (billCode != data.rows.item(i).billCode)) {
+								count++;
+								billCode = data.rows.item(i).billCode;
+							}
+							lis += genSqlli(data.rows.item(i), count);
+							totalNum += data.rows.item(i).number;
+							sum += (data.rows.item(i).weight > 0 ? data.rows.item(i).weight * data.rows.item(i).price : data.rows.item(i).number * data.rows.item(i).price);
+						}
+						$('#goodsList').html(lis);
+						$('#sum').text(sum.toFixed(2));
+						$('#totalSum').val(sum.toFixed(2));
+						$('#discount').val(sum.toFixed(2));
+					})
+				}
+
+				function genSqlli(item, count) {
+					var remark = "";
+					if(qiao.h.getItem(item.billCode + item.sourceId + 'remark')){
+							remark = qiao.h.getItem(item.billCode + item.sourceId  + 'remark');
+						}
+						else{
+							remark = item.remark;
+						}
+					var goodsLis = '';
+					var style = '"padding:0"';
+					if(item.number != '0') {
+						if(item.number == item.orderNumber) {
+							style = '"background:yellow;padding:0"';
+						} else {
+							style = '"background:red;padding:0"';
+						}
+
+					} else {
+						if(count % 2 == 0) {
+							style = '"background:#D9D9D9;padding:0"';
+						}
+					}
+					goodsLis += '<li class="mui-table-view-cell" style="padding:0"';
+					goodsLis += 'data-id="' + item.id + '" ';
+					goodsLis += 'data-billcode="' + item.billCode + '" ';
+					goodsLis += 'data-goodscode="' + item.goodsCode + '" ';
+					goodsLis += 'data-goodsname="' + item.goodsName + '" ';
+					goodsLis += 'data-price="' + item.price + '" ';
+					goodsLis += 'data-realprice="' + item.price + '" ';
+					goodsLis += 'data-number="' + item.number + '" ';
+					goodsLis += 'data-weight="' + item.weight + '" ';
+					goodsLis += 'data-unit="' + item.unit + '" ';
+					goodsLis += 'data-sourceid="' + item.sourceId + '" ';
+					goodsLis += 'data-ordernumber="' + item.orderNumber + '" ';
+					goodsLis += 'data-sellnumber="' + item.sellNumber + '" ';
+					goodsLis += 'data-orderweight="' + item.orderWeight + '" ';
+					goodsLis += 'data-sellweight="' + item.sellWeight + '" ';
+					goodsLis += 'data-remark="' + item.remark + '" ';
+					goodsLis += '>';
+					goodsLis += '<div class="mui-slider-right mui-disabled">' +
+						'<a class="mui-btn mui-btn-red doneBtn">发货</a>' +
+						'<a class="mui-btn mui-btn-blue editBtn">修改</a>' +
+						'<a class="mui-btn mui-btn-warning terminate">终止</a>' +
+						'</div>' +
+
+						'<div class="mui-slider-handle mui-row tableData" style=' + style + '>';
+
+					goodsLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">' + item.goodsName + '</div>';
+					goodsLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">' +
+						(item.orderNumber - item.sellNumber) + item.unit + (item.orderWeight > 0 ? (item.orderWeight - item.sellWeight) + '斤' : '') + '</div>';
+					goodsLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">' +
+						(item.number > 0 ? (item.number + item.unit) : item.number) + (item.weight > 0 ? (item.weight + '斤') : '') + '</div>';
+
+					goodsLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">' + item.price + '</div>';
+					goodsLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">' +
+						(item.weight > 0 ? (item.weight * item.price).toFixed(2) : (item.number * item.price).toFixed(2)) + '</div>';
+					goodsLis += '<div style="right:10px;position:absolute;bottom:0px;color:green">'+(remark!='null'?remark:'')+'</div>';
+					goodsLis += '</div>';
+					return goodsLis;
+				}
+
+				function initData() {
+					var help = qiao.h.getItem('hzschelp');
+
+					var createsql = 'create table if not exists ' + tableName + ' (id integer primary key AutoIncrement';
+					createsql += ',billCode,goodsCode,goodsName,orderNumber,sellNumber,orderWeight,sellWeight,price,number,weight,unit,sourceId,storage,remark';
+					createsql += ')';
+					//console.log(createsql);
+					//if(help == null){
+
+					qiao.h.update(db, createsql, function() {
+						getDeliverList(client, type);
+					});
+
+					//qiao.h.insertItem('hzschelp', '2018042411');
+
+					//}
+
+				};
+
+				function initEvent() {
+					qiao.on('#goodsList li', 'tap', function() {
+						var _this = $(this);
+						$('#goodsname').html(_this.data('goodsname'));
+
+						$('#orderNumber').val(_this.data('ordernumber') + _this.data('unit') +
+							(_this.data('orderweight') > 0 ? _this.data('orderweight') + '斤' : ''));
+						$('#sellNumber').val(_this.data('sellnumber') + _this.data('unit') +
+							(_this.data('sellweight') > 0 ? _this.data('sellweight') + '斤' : ''));
+						//
+						//
+						if(qiao.h.getItem(_this.data('billcode') + _this.data('sourceid') + 'number')) {
+							$('#number').val(qiao.h.getItem(_this.data('billcode') + _this.data('sourceid') + 'number'));
+						} else {
+							$('#number').val(_this.data('number') > 0 ? _this.data('number') :
+								(_this.data('ordernumber') - _this.data('sellnumber')));
+						}
+						if(qiao.h.getItem(_this.data('billcode') + _this.data('sourceid') + 'weight')) {
+							
+							$('#weight').val(qiao.h.getItem(_this.data('billcode') + _this.data('sourceid') + 'weight'));
+						} else {
+							$('#weight').val(_this.data('weight') > 0 ? _this.data('weight') :
+								_this.data('orderweight') - _this.data('sellweight'));
+						}
+
+						if(!$('#weight').val()) {
+							$('#weight').val('0');
+						}
+						$('#unit').val(_this.data('unit'));
+						if(qiao.h.getItem(_this.data('billcode') + _this.data('sourceid') + 'price')){
+							$('#price').val(qiao.h.getItem(_this.data('billcode') + _this.data('sourceid') + 'price'));
+						}
+						else{
+							$('#price').val(_this.data('price'));
+						}
+						console.log(_this.data('remark'));
+						if(qiao.h.getItem(_this.data('billcode') + _this.data('sourceid') + 'remark')){
+							
+							$('#remark').val(qiao.h.getItem(_this.data('billcode') + _this.data('sourceid') + 'remark'));
+						}
+						else{
+							$('#remark').val(_this.data('remark'));
+						}
+
+						
+						currentRemark = _this.data('billcode') + _this.data('sourceid');
+
+						realprice = _this.data('realprice');
+						selectGoodsCode = _this.data('goodscode');
+						$('#money').val(($('#weight').val() > 0 ? $('#weight').val() * $('#price').val() : $('#number').val() * $('#price').val()).toFixed(2));
+						currentId = _this.data('id');
+
+						mui("#popover").popover("toggle");
+						setTimeout(function() {
+							//$('#number').focus();
+							//console.log($('#number'));
+
+							document.getElementById('weight').focus();
+
+						}, 100);
+
+					})
+
+					qiao.on('.terminate', 'tap', function() {
+						var billCode = $(this).parent().parent().data('billcode');
+						var id = $(this).parent().parent().data('sourceid');
+
+						app.getData('bill/terminateSingle.do', {
+							billCode: billCode,
+							id: id
+						}, function(data) {
+							if(data.result == "success") {
+								mui.toast('终止成功');
+								getDeliverList(client, type);
+							} else {
+								mui.toast('终止失败');
+							}
+						})
+						return false;
+					})
+
+					qiao.on('#number', 'input', autocalc);
+					qiao.on('#price', 'input', autocalc);
+					qiao.on('#weight', 'input', autocalc);
+					qiao.on('.close', 'tap', function() {
+						mui("#popover").popover("toggle");
+
+					});
+					qiao.on('.closeSum', 'tap', function() {
+						mui("#popoverSum").popover("toggle");
+
+					});
+					window.addEventListener('addGoodsBack',function(){
+						initData();
+					})
+					qiao.on('#add', 'tap', function() {
+						//console.log(currentId);
+						app.getSyncData('bill/getLastPrice.do',{goodsCode:selectGoodsCode},function(data){
+							realprice = data;
+						})
+						
+						var price = $('#weight').val()>0?$('#weight').val()*$('#price').val()/$('#number').val():$('#price').val();
+						
+						if((parseFloat(price) > parseFloat(realprice) * 1.2) ||
+							(parseFloat(price) < parseFloat(realprice) * 0.8)) {
+							mui.alert('单价有异常,是否输入错误');
+						}
+						
+						var number = $('#number').val() == '' ? 0 : $('#number').val();
+						var weight = $('#weight').val() == '' ? 0 : $('#weight').val();
+						price = $('#price').val() == '' ? 0 : $('#price').val();
+						qiao.h.update(db, 'update ' + tableName + ' set number="' + number +
+							'",weight="' + weight + '",price="' + price + '" where id=' + currentId,
+							function() {
+								initListByDatabase();
+							});
+
+						qiao.h.insertItem(currentRemark + 'remark', $('#remark').val());
+						qiao.h.insertItem(currentRemark + 'price', price);
+						qiao.h.insertItem(currentRemark + 'number', number);
+						qiao.h.insertItem(currentRemark + 'weight', weight);
+						mui("#popover").popover("toggle");
+					})
+					qiao.on('.doneBtn', 'tap', function() {
+						var id = $(this).parent().parent().data('id');
+						var billCode = $(this).parent().parent().data('billcode');
+						var goodscode = $(this).parent().parent().data('goodscode');
+						var sourceid = $(this).parent().parent().data('sourceid');
+						
+						var number = $(this).parent().parent().data('ordernumber');
+						var weight = $(this).parent().parent().data('ordernwight');
+
+						qiao.h.insertItem(billCode + sourceid + 'number', number + '');
+						qiao.h.update(db, 'update ' + tableName + ' set number=orderNumber,weight=orderWeight where id=' + id, function() {
+							initListByDatabase();
+						});
+
+						return false;
+					})
+					qiao.on('#btnok', 'tap', function() {
+						if(totalNum == 0) {
+							mui.toast('请输入数量');
+							return;
+						}
+						mui("#popoverSum").popover("toggle");
+						business = false;
+					})
+					qiao.on('#addOrder','tap',function(){
+						qiao.h.open('stock','stock.html',{client:client,openBy:'deliverList',showHeader: true});
+					})
+					function clear(){
+						qiao.h.query(db, 'select * from ' + tableName, function(res) {
+							for(i = 0; i < res.rows.length; i++) {
+								if(res.rows.item(i)['number'] != '0') {
+									
+									qiao.h.delItem(res.rows.item(i)['billCode'] + res.rows.item(i)['sourceId'] + 'remark');
+									qiao.h.delItem(res.rows.item(i)['billCode'] + res.rows.item(i)['sourceId'] + 'price');
+									qiao.h.delItem(res.rows.item(i)['billCode'] + res.rows.item(i)['sourceId'] + 'number');
+									qiao.h.delItem(res.rows.item(i)['billCode'] + res.rows.item(i)['sourceId'] + 'weight');
+									
+								}
+
+							}
+						})
+					}
+					qiao.on('#btnSave', 'tap', function() {
+						if(business){
+							return;
+						}
+						business = true;
+						mui("#popoverSum").popover("toggle");
+						var jsonArray = [];
+						var sum = 0;
+						var count = 0;
+						qiao.h.query(db, 'select * from ' + tableName, function(res) {
+							for(i = 0; i < res.rows.length; i++) {
+								if(res.rows.item(i)['number'] != '0') {
+									var jsonobject = {};
+									jsonobject.sourceCode = res.rows.item(i)['billCode'];
+									jsonobject.goodsCode = res.rows.item(i)['goodsCode'];
+									jsonobject.weight = res.rows.item(i)['weight'];
+									jsonobject.unit = res.rows.item(i)['unit'];
+									jsonobject.number = res.rows.item(i)['number'];
+									jsonobject.price = res.rows.item(i)['price'];
+									jsonobject.sourceId = res.rows.item(i)['sourceId'];
+									jsonobject.storage = res.rows.item(i)['storage'];
+									jsonobject.remark = qiao.h.getItem(res.rows.item(i)['billCode'] + res.rows.item(i)['sourceId'] + 'remark');
+								/*	qiao.h.delItem(res.rows.item(i)['billCode'] + res.rows.item(i)['sourceId'] + 'remark');
+									qiao.h.delItem(res.rows.item(i)['billCode'] + res.rows.item(i)['sourceId'] + 'price');
+									qiao.h.delItem(res.rows.item(i)['billCode'] + res.rows.item(i)['sourceId'] + 'number');
+									qiao.h.delItem(res.rows.item(i)['billCode'] + res.rows.item(i)['sourceId'] + 'weight');  */
+									jsonArray.push(jsonobject);
+									//sum += res.rows.item(i)['number'] * res.rows.item(i)['price'];
+									sum += (res.rows.item(i)['weight'] > 0 ? res.rows.item(i)['weight'] * res.rows.item(i)['price'] : res.rows.item(i)['number'] * res.rows.item(i)['price'])
+									count++;
+								}
+
+							}
+							if(count == 0) {
+								mui.toast('请输入数量');
+								return;
+							}
+							var jsona = {};
+							jsona.goods = jsonArray;
+							jsona.client = client;
+							jsona.sum = sum;
+							jsona.realGather = 0;
+							jsona.discount = $('#discount').val();
+							jsona.operator = qiao.h.getItem('loginuser');
+							jsona.billCode = billCode;
+							if(modify) {
+								app.postData('bill/editSell.do', {
+									jsonstr: JSON.stringify(jsona)
+								}, function(data) {
+									if(data.result == 'success') {
+										mui.toast('保存成功');
+										qiao.h.fire('sellDetail', 'back');
+										mui.back();
+									}
+								})
+							} else {
+								app.postData('bill/saveSell.do', {
+									jsonstr: JSON.stringify(jsona)
+								}, function(data) {
+									if(data.result == 'success') {
+										var tempTable = [];
+										qiao.h.insertItem('deliverListtempTable',JSON.stringify(tempTable));
+										mui.toast('保存成功');
+										clear();
+										qiao.h.fire('clientDeliver.html', 'back');
+										
+										window.history.back();
+										mui.back();
+										
+									}
+									else if (data.result == 'clientMaxDebt'){
+										mui.toast('该客户已超出最大欠款');
+									}
+									else if (data.result == 'payOutDate'){
+										mui.toast('该客户已超出欠款最后期限');
+									}
+									else if (data.result == 'clientMaxDebtHint'){
+										mui.toast('保存成功，但该客户已超出最大欠款，请注意结款','long');
+										clear();
+										qiao.h.fire('clientDeliver.html', 'back');
+										mui.back();
+									}
+									else if (data.result == 'handleMaxDebt'){
+										mui.toast('该经手人已超出最大欠款');
+									}
+									else if (data.result == 'handleMaxDebtHint'){
+										mui.toast('保存成功，但该经手人已超出最大欠款，请注意结款','long');
+										clear();
+										qiao.h.fire('clientDeliver.html', 'back');
+										mui.back();
+									}
+								})
+							}
+
+						})
+					})
+
+				}
+
+				function autocalc() {
+					var tempStr = $(this).val();
+
+					if((tempStr.length > 1) && (tempStr.charAt(0) == '0') && (tempStr.charAt(1) != '.')) {
+						console.log(tempStr.charAt(1));
+						$(this).val(tempStr.substring(1));
+
+					}
+					$('#money').val($('#weight').val() > 0 ? ($('#weight').val() * $('#price').val()).toFixed(2) : ($('#number').val() * $('#price').val()).toFixed(2));
+
+				}
+			})
+		</script>
+	</body>
+
+</html>

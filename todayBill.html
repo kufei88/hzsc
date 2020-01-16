@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/table.css" />
+	</head>
+	<style>
+		  
+
+
+	</style>
+	<body> 
+		
+        
+		<header class="mui-bar mui-bar-nav" id="header" >
+			<h1 id="title" class="mui-title">今日开单</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			
+		</header>
+		
+		<div class="mui-content">
+			<div class="mui-bar" style="padding: 0;">
+				<div style="display:inline-flex; width:100%; padding-left:1px; padding-right:1px;">
+						<div class="mui-input-row" style="height:40px; flex-grow:4;">
+							<input type="text" id="searchContent" class="mui-input-clear s_font-size2"
+								 placeholder="请输入客户或拼音码" maxlength="100" style="height:100%; padding-right:32px;" />
+						</div>
+						<div style="height:40px; flex-grow:1;">
+							<input type="button" value="搜索" class="u_btn" style="width:100%; height:100%;" />
+						</div>
+				</div>
+				<div class="mui-row tableHeader">
+					<div class="mui-col-sm-3 mui-col-xs-3 textCenter">单据</div>
+					<div class="mui-col-sm-3 mui-col-xs-3 textCenter">客户</div>
+					<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >货款</div>
+					<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >已付款</div>
+					<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >审核否</div>
+				</div>
+			</div>
+			<div class="mui-scroll" style="margin-top: 80px;margin-bottom: 50px;">
+				
+			<ul class="mui-table-view"  id="billlist">
+				
+			</ul>
+			</div>
+			<div class="mui-bar mui-bar-footer mui-row" style="padding: 10px;border-bottom: 1px solid #D9D9D9;">
+			<div class="mui-col-sm-4 mui-col-xs-4">货款:<span id="shouldPaySum"></span></div>
+			<div class="mui-col-sm-4 mui-col-xs-4">已付:<span id="paySum"></span></div>
+			<div class="mui-col-sm-4 mui-col-xs-4">欠款:<span id="debtSum"></span></div>
+			
+		</div>
+		</div>
+		
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>  
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				initTable('');
+				function initTable(search){
+					var headLi = '';
+					
+					var dataLis = '';  
+					var shouldPaySum = 0;
+					var paySum = 0;
+					app.getData('bill/getTodayBill.do',{operator:qiao.h.getItem('loginuser'),search:search},function(data){
+						var count=0;
+						data.forEach(function(item){
+							count++;
+							dataLis += '<li data-billcode="'+item.realBillCode+'" class="mui-row tableData '+(count%2==0?'odd':'')+'">';
+							dataLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">'+item.billCode+'</div>';
+							dataLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">'+item.client+'</div>';
+							dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter"  >'+item.shouldPay.toFixed(2)+'</div>';
+							dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter" >'+item.pay.toFixed(2)+'</div>';
+							dataLis += '<div class="mui-col-sm-2 mui-col-xs-2 mui-checkbox mui-disabled textCenter" style="text-align:center">'+
+							'<input type="checkbox"  disabled="disabled"  '+(item.audite?'checked':'')+'></div>';
+							
+							dataLis += '</li>';
+							shouldPaySum += item.shouldPay;
+							paySum += item.pay;
+						})
+						$('#billlist').html(headLi+dataLis);
+						$('#shouldPaySum').text(shouldPaySum.toFixed(2));
+						$('#paySum').text(paySum.toFixed(2));
+						$('#debtSum').text((shouldPaySum-paySum).toFixed(2));
+					})
+				}
+				window.addEventListener('reload',function(){
+					initTable($('#searchContent').val());
+				}) 
+				qiao.on('.u_btn','tap',function(){
+					initTable($('#searchContent').val());
+				})
+				qiao.on('#btnback','tap',function(){
+					mui.back();
+				})
+				qiao.on('#billlist li','tap',function(){
+					qiao.h.open('sellDetail','sellDetail.html',{billCode:$(this).data('billcode')});
+				})
+			})
+		</script>
+	</body>
+
+</html>

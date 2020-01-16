@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="myFonts/iconfont.css" /> 
+    <script src="./js/app.js"></script>
+    <script type="text/javascript" charset="UTF-8">
+      	(function($, doc) {
+			$.init();  
+			$.plusReady(function() { 
+				var settings = app.getSettings();
+				
+				
+				var address = doc.getElementById("address");
+				var account = doc.getElementById("account");
+				var port = doc.getElementById("port");
+				
+				
+				address.value = settings.address?settings.address:'app.jishengsoft.com';
+				account.value = settings.account?settings.account:'swgldemo';
+				port.value = settings.port?settings.port:'8020';
+				doc.getElementById("btnok").addEventListener('tap',function(){
+      			
+      			
+      			settings.address = address.value;
+      			settings.account = account.value;
+      			settings.port = port.value;
+      			app.setSettings(settings);
+      			mui.back();
+      	});
+				});
+			
+		}(mui, document));
+      	
+    </script>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav"> 
+			<h1 class="mui-title">设置</h1>
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>
+			</button>  
+			<button type="button" id="btnok" class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
+				<span class="mui-icon iconfont icon-18queding"></span>
+			</button>  
+	</header>   
+	<div class="mui-content">
+		<form id='setting-form' class="mui-input-group">
+				
+				  
+				<div class="mui-input-row">
+					<label>服务器地址</label>
+					<input id='address' type="text" class="mui-input-clear mui-input" placeholder="请输入服务器">
+				</div>
+				
+				<div class="mui-input-row">
+					<label>帐套</label>
+					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入帐套">
+				</div>
+				<div class="mui-input-row">
+					<label>端口号</label>
+					<input id='port' type="text" class="mui-input-clear mui-input" placeholder="请输入端口号">
+				</div>
+				
+		</form>
+		
+	</div>
+</body>
+</html>

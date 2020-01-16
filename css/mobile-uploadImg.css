@@ -1,0 +1,496 @@
+.mbupload_frame {
+	background: #FFF;
+	padding: 10px 15px;
+	display: block;
+	border: 1px #d9d9d9 solid;
+	min-height: 150px;
+}
+
+.mbupload_photoList {
+	display: none;
+}
+
+.mbupload_photoList ul,
+.mbupload_photoList li,
+.mbupload_photoList a,
+.mbupload_photoList img {
+	margin: 0;
+	padding: 0;
+}
+
+.mbupload_photoList ul,
+.mbupload_photoList li {
+	list-style: none;
+}
+
+.mbupload_photoList li {
+	float: left;
+	margin: 0 12px 15px 0;
+	position: relative;
+	border: 1px #d9d9d9 dashed;
+}
+
+.mbupload_photoList li.mbupload_addPic {
+	border: 1px #d9d9d9 solid;
+}
+
+.mbupload_photoList li.mbupload_addPic input {
+	z-index: 200;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	-ms-filter: 'alpha(opacity=0)';
+}
+
+.mbupload_photoList .mbupload_on,
+.mbupload_maskLay {
+	width: 80px;
+	height: 80px;
+}
+
+.mbupload_photoCut {
+	width: 80px;
+	height: 80px;
+	overflow: hidden;
+	line-height: 0;
+}
+
+.mbupload_photoCut img {
+	height: 80px;
+}
+
+.mbupload_bgimg {
+	width: 100px;
+	height: 100px;
+	margin: 14px auto;
+	cursor: pointer;
+}
+
+.mbupload_bgimg .iconSendImg {
+	height: 100%;
+	width: 100%;
+	background: #d9d9d9 url(../images/mbupload_push.png) no-repeat 50% 50%;
+}
+
+.mbupload_bgimg input {
+	height: 100%;
+	width: 100%;
+	z-index: 200;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	-ms-filter: 'alpha(opacity=0)';
+	cursor: pointer;
+}
+
+.mbupload_photoList .mbupload_on {
+	background: #d9d9d9 url(../images/mbupload_push.png) no-repeat 50% 50%;
+	cursor: pointer;
+}
+
+.mbupload_cBtn {
+	width: 22px;
+	height: 22px;
+	background: url(../images/mbupload_sprBg.png) no-repeat;
+	background-size: 44px auto;
+	-webkit-background-size: 44px auto;
+	font-size: 0
+}
+
+.mbupload_cBtn {
+	right: -10px;
+	top: -10px
+}
+
+.mbupload_cBtnOn {
+	background-image: url(../images/mbupload_sprBg.png);
+	background-position: -22px 0
+}
+
+.mbupload_maskLay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	-moz-opacity: 0.6;
+	opacity: 0.6;
+	background-color: #000
+}
+
+.mbupload_maskTxt {
+	position: absolute;
+	left: 0;
+	top: 48%;
+	color: #FFF;
+	font-size: 0.625em;
+	text-align: center;
+	width: 100%;
+	line-height: 0;
+}
+
+.mbupload_progress {
+	width: 58px;
+	height: 8px;
+	padding: 2px 2px 0;
+	position: absolute;
+	left: 11px;
+	top: 35px;
+	background-color: #000;
+	filter: alpha(opacity=60);
+	opacity: 0.6;
+}
+
+.mbupload_brSmall {
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px
+}
+
+.mbupload_proBar {
+	height: 4px;
+	background-color: #fff
+}
+
+.mbupload_photoList .imv {
+	bottom: 2px;
+	left: -14px
+}
+
+.mbupload_db {
+	display: block;
+}
+
+.mbupload_pa {
+	position: absolute;
+}
+
+.mbupload_textTip {
+	width: 100%;
+	line-height: 21px;
+	color: #afafaf;
+	clear: both;
+}
+
+.mbupload_f12 {
+	font-size: 12px;
+}
+
+
+/* 上传 样式2 */
+
+.uploadImgStyle2 .mbupload_photoList li {
+	width: 100%;
+}
+
+.uploadImgStyle2 .mbupload_maskLay {
+	width: 100%;
+	height: 100%;
+}
+
+.uploadImgStyle2 .mbupload_photoList .mbupload_on {
+	width: 100%;
+	height: auto;
+	min-height: 80px;
+}
+
+.uploadImgStyle2 .mbupload_photoCut {
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+}
+
+.uploadImgStyle2 .mbupload_photoCut img {
+	width: 100%;
+	height: auto;
+}
+
+.uploadImgStyle2 .mbupload_progress {
+	width: 80%;
+	height: 8px;
+	padding: 2px 2px 0;
+	position: absolute;
+	left: 10%;
+	top: 48%;
+}
+
+
+/* 提示 样式 */
+
+.tip_tips {
+	padding: 5px 20px;
+	background-color: #000;
+	margin: 0 auto;
+	filter: alpha(opacity=60);
+	opacity: 0.6;
+	line-height: 21px;
+	font-size: 14px;
+	text-align: center;
+	color: #FFF;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px
+}
+
+.tip_loadicon {
+	position: relative;
+	width: 17px;
+	height: 21px;
+	margin-right: 5px;
+	display: inline-block;
+	vertical-align: -20%
+}
+
+.tip_blockG {
+	display: block;
+	position: absolute;
+	background-color: #ccc;
+	width: 2px;
+	height: 6px;
+	-moz-border-radius: 3px 3px 0 0;
+	-moz-transform: scale(0.4);
+	-moz-animation-name: tip_fadeG;
+	-moz-animation-duration: 0.48s;
+	-moz-animation-iteration-count: infinite;
+	-moz-animation-direction: linear;
+	-webkit-border-radius: 3px 3px 0 0;
+	-webkit-transform: scale(0.4);
+	-webkit-animation-name: tip_fadeG;
+	-webkit-animation-duration: 0.48s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-direction: linear;
+	border-radius: 3px 3px 0 0;
+	transform: scale(0.4);
+	animation-name: tip_fadeG;
+	animation-duration: 0.48s;
+	animation-iteration-count: infinite;
+	animation-direction: linear
+}
+
+#rotateG_01 {
+	left: 0;
+	top: 8px;
+	-moz-animation-delay: 0.18s;
+	-moz-transform: rotate(-90deg);
+	-webkit-animation-delay: 0.18s;
+	-webkit-transform: rotate(-90deg);
+	animation-delay: 0.18s;
+	transform: rotate(-90deg)
+}
+
+#tip_rotateG_01 {
+	left: 0;
+	top: 8px;
+	-moz-animation-delay: 0.18s;
+	-moz-transform: rotate(-90deg);
+	-webkit-animation-delay: 0.18s;
+	-webkit-transform: rotate(-90deg);
+	animation-delay: 0.18s;
+	transform: rotate(-90deg)
+}
+
+#tip_rotateG_02 {
+	left: 2px;
+	top: 3px;
+	-moz-animation-delay: 0.24s;
+	-moz-transform: rotate(-45deg);
+	-webkit-animation-delay: 0.24s;
+	-webkit-transform: rotate(-45deg);
+	animation-delay: 0.24s;
+	transform: rotate(-45deg)
+}
+
+#tip_rotateG_03 {
+	left: 8px;
+	top: 1px;
+	-moz-animation-delay: 0.3s;
+	-moz-transform: rotate(0deg);
+	-webkit-animation-delay: 0.3s;
+	-webkit-transform: rotate(0deg);
+	animation-delay: 0.3s;
+	transform: rotate(0deg)
+}
+
+#tip_rotateG_04 {
+	right: 2px;
+	top: 3px;
+	-moz-animation-delay: 0.36s;
+	-moz-transform: rotate(45deg);
+	-webkit-animation-delay: 0.36s;
+	-webkit-transform: rotate(45deg);
+	animation-delay: 0.36s;
+	transform: rotate(45deg)
+}
+
+#tip_rotateG_05 {
+	right: 0;
+	top: 8px;
+	-moz-animation-delay: 0.42s;
+	-moz-transform: rotate(90deg);
+	-webkit-animation-delay: 0.42s;
+	-webkit-transform: rotate(90deg);
+	animation-delay: 0.42s;
+	transform: rotate(90deg)
+}
+
+#tip_rotateG_06 {
+	right: 2px;
+	bottom: 2px;
+	-moz-animation-delay: 0.48s;
+	-moz-transform: rotate(135deg);
+	-webkit-animation-delay: 0.48s;
+	-webkit-transform: rotate(135deg);
+	animation-delay: 0.48s;
+	transform: rotate(135deg)
+}
+
+#tip_rotateG_07 {
+	bottom: 0;
+	left: 8px;
+	-moz-animation-delay: 0.54s;
+	-moz-transform: rotate(180deg);
+	-webkit-animation-delay: 0.54s;
+	-webkit-transform: rotate(180deg);
+	animation-delay: 0.54s;
+	transform: rotate(180deg)
+}
+
+#tip_rotateG_08 {
+	left: 2px;
+	bottom: 2px;
+	-moz-animation-delay: 0.6s;
+	-moz-transform: rotate(-135deg);
+	-webkit-animation-delay: 0.6s;
+	-webkit-transform: rotate(-135deg);
+	animation-delay: 0.6s;
+	transform: rotate(-135deg)
+}
+
+.tip_close {
+	background-image: url(../images/tip_close.png);
+	background-color: #000;
+	background-size: 100%;
+	cursor: pointer;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	text-align: center;
+	position: absolute;
+	float: right;
+	line-height: 18px;
+	top: -10px;
+	right: 25px;
+}
+
+.tip_popLayer {
+	width: 98%;
+	padding: 10px;
+	margin: 0 auto;
+	background-color: #FFF;
+	z-index: 8888;
+	overflow: hidden;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px
+}
+
+.tip_popLayer h3 {
+	position: relative;
+	line-height: 45px;
+	text-align: center
+}
+
+.tip_pSpace {
+	padding: 0;
+	overflow: hidden
+}
+
+.tip_praiseTips {
+	padding: 10px 15px;
+	background-color: #fff;
+	overflow: hidden
+}
+
+.tip_pSpace .mbupload_photoList,
+.tip_pSpace .tip_praiseTips {
+	background-color: #ebebeb
+}
+
+.tip_praiseTips {
+	line-height: 25px;
+	color: #8d8d8d
+}
+
+.tip_editTCon {
+	margin: 10px 10px 20px;
+	text-align: center;
+	line-height: 25px;
+	color: #434343
+}
+
+.tip_editArea {
+	height: 50px;
+	padding: 13px 15px 0;
+	margin: 0 -10px;
+	border-top: 1px solid #e5e5e5;
+	background-color: #f8f8f8;
+	text-align: center
+}
+
+.tip_editBtn1,
+.tip_editBtn2 {
+	text-decoration: none;
+	display: inline-block;
+	padding: 0 20px;
+	margin: 0 10px;
+	height: 30px;
+	line-height: 30px;
+	color: #fff;
+	border-radius: 2px;
+	text-align: center
+}
+
+.tip_editBtn1 {
+	background-color: #7fbe23
+}
+
+.tip_editBtn2 {
+	background-color: #a2a2a2
+}
+
+.tip_db {
+	display: block;
+}
+
+@-moz-keyframes tip_fadeG {
+	0% {
+		background-color: #8b8c8d
+	}
+	100% {
+		background-color: #ccc
+	}
+}
+
+@-webkit-keyframes tip_fadeG {
+	0% {
+		background-color: #8b8c8d
+	}
+	100% {
+		background-color: #ccc
+	}
+}
+
+@-o-keyframes tip_fadeG {
+	0% {
+		background-color: #8b8c8d
+	}
+	100% {
+		background-color: #ccc
+	}
+}
+
+@keyframes tip_fadeG {
+	0% {
+		background-color: #8b8c8d
+	}
+	100% {
+		background-color: #ccc
+	}
+}

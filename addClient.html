@@ -1,0 +1,380 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="myFonts/iconfont.css" /> 
+		<link rel="stylesheet" href="css/style.css" />    
+		<link rel="stylesheet" href="css/mobile-uploadImg.css">
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script src="js/mobile-uploadCompresserImg.js"></script>
+    	<script src="js/mobile-uploadImg.js"></script>
+	</head>
+	<style type="text/css">
+		#selectimg{
+			width: 70px;height: 70px;border: 1px solid #A9A9A9;float: left;margin-left: 10px;margin-top: 10px;
+			border-radius:5px ;
+			color: #A9A9A9;
+			font-size: 12px;
+			position: relative;
+		}
+		#showimg{
+			width: 70px;
+			height: 70px;
+			border-radius:5px ;
+			z-index: 100;
+		}
+		#content{
+			position: absolute;
+			top:25px;
+			left: 10px;  
+		}
+		#popover{
+			position: fixed;
+				min-width: 282px;
+				height: 200px;
+				top: 50% !important;
+				margin-top: -150px;
+				left: 50% !important;
+				margin-left: -141px;
+		}
+		input{
+			width: 100%;!important;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="back">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			<h1 class="mui-title">新增往来单位</h1>
+		<button type="button" id="btnok" class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
+				修改
+			</button>  
+		</header>
+		<div class="mui-content">
+			<div class="mui-card" style="margin-bottom: 25px;">
+				<ul class="mui-table-view">
+					
+					<li class="mui-table-view-cell  mui-left mui-row">
+						<div class="mui-col-sm-2 mui-col-xs-2 ">往来单位:</div>
+						<div class="mui-col-sm-8 mui-col-xs-8 " >
+						<input type="text" id="client"  /></div>
+					</li>
+					<li class="mui-table-view-cell  mui-left mui-row">
+						<div class="mui-col-sm-2 mui-col-xs-2 ">公司名称:</div>
+						<div class="mui-col-sm-8 mui-col-xs-8 " >
+						<input type="text" id="clientName"  /></div>
+					</li>
+				</ul> 
+			</div>
+			
+			<div id="popover" class="mui-popover">
+
+				<div class="mui-content-padded">
+					  
+					
+					<button type="button" class="mui-btn mui-btn-block " id="openCamera">拍照</button>
+						<button type="button" class="mui-btn mui-btn-block " id="selectGallery">选取本地相册</button>
+						<button type="button" class="mui-btn mui-btn-block " id="cancel">取消</button>
+					
+	
+				</div>
+			</div>
+			
+			<div class="mui-card" style="margin-bottom: 25px;">
+				<ul class="mui-table-view">
+					
+					<li class="mui-table-view-cell  mui-left mui-row">
+						<div class="mui-col-sm-2 mui-col-xs-2 ">地址:</div>
+						<div class="mui-col-sm-8 mui-col-xs-8 " >
+						<input type="text" id="address"  /></div>
+					</li>
+					<li class="mui-table-view-cell  mui-left mui-row">
+						<div class="mui-col-sm-2 mui-col-xs-2 ">联系人:</div>
+						<div class="mui-col-sm-8 mui-col-xs-8 " >
+						<input type="text" id="handler"  /></div>
+					</li>
+					<li class="mui-table-view-cell  mui-left mui-row">
+						<div class="mui-col-sm-2 mui-col-xs-2 ">联系电话:</div>
+						<div class="mui-col-sm-8 mui-col-xs-8 " ><input  type="text" id="number"  /></div>
+						<div class="mui-col-sm-2 mui-col-xs-2 ">
+							<span class="mui-icon iconfont icon-dianhuazhengzaibohao" style="float: right;" id="dial"></span>  </div>
+					</li>
+					<li class="mui-table-view-cell  mui-left mui-row">
+						<div class="mui-col-sm-2 mui-col-xs-2 ">身份证号:</div>
+						<div class="mui-col-sm-8 mui-col-xs-8 " >
+						<input type="text" id="idNumber"  />  </div>
+					</li>
+				</ul> 
+			</div>
+			<div class="mui-card" style="margin-bottom: 25px;">
+			<div id="uploadImgForm">
+	            <div class="mbupload_frame">
+	                <div class="mbupload_photoList">
+	                    <ul>
+	                    	 
+	                        <li class="mbupload_on mbupload_addPic mbupload_addImg"></li>
+	                    </ul>
+	                    <p class="mbupload_textTip mbupload_f12">还可上传<span class="mbupload_onlyUploadNum"></span>张照片呦~</p>
+	                </div>
+	                <div class="mbupload_bgimg">
+	                    <div class="iconSendImg mbupload_addImg" style="background:url(images/upload_carbg.png) no-repeat 50% 50%;"></div>
+	                </div>
+	            </div>
+	        </div>
+			</div>
+				
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/app.js" ></script>  
+		<script type="text/javascript" src="js/qiao.h.js" ></script>
+		<script type="text/javascript" src="js/addClient.js" ></script>
+		<script>
+			mui.plusReady(function(){
+				var detail = plus.webview.currentWebview();
+				var openBy = detail.openBy;
+				var state = detail.state;
+				var oldClient = detail.client;
+				var autoAdd = '';
+				getAutoAdd();
+				if(state == 'detail'){
+					$('#client').val(detail.client);
+					
+					$('#clientName').val(detail.clientName);
+					$('#address').val(detail.address);
+					$('#handler').val(detail.handler);
+					$('#number').val(detail.tel);
+					$('#idNumber').val(detail.idNumber);
+					$('#uploadImgForm').hide();
+					$('#btnok').text('修改');
+					$('#client').attr('readonly','readonly');
+					$('#clientName').attr('readonly','readonly');
+					$('#address').attr('readonly','readonly');
+					$('#handler').attr('readonly','readonly');
+					$('#number').attr('readonly','readonly');
+					$('#idNumber').attr('readonly','readonly');
+				}
+				else{
+					$('#btnok').text('保存');
+					oldClient = '';
+				}
+				var files = [];
+				initEvent();
+				
+				function getAutoAdd(){
+					app.getData('system/getMemValue.do',{memName:'往来单位和公司名称一致'},function(data){
+						autoAdd = data.result;
+						console.log(data.result);
+					})
+				}
+				
+				function getImg(oldClient){
+					app.getData('client/getImgByClient.do',{client:oldClient},function(data){
+						data.forEach(function(item){
+							
+						})
+					})
+				}
+				function initEvent(){
+					qiao.on('#back','tap',function(){
+						mui.back();
+					})
+					qiao.on('#selectimg','tap',function(){
+						
+						mui("#popover").popover("toggle");
+					})
+					qiao.on('#cancel', 'tap', function() {
+						mui("#popover").popover("toggle");
+					})
+					qiao.on('#openCamera', 'tap', function() {
+						appendByCamera();
+					})
+				
+					qiao.on('#selectGallery', 'tap', function() {
+						appendByGallery();
+					})
+					qiao.on('#client','change',function(){
+						if(autoAdd == '是'){
+							$('#clientName').val($('#client').val());
+						}
+					})
+					qiao.on('#clientName','change',function(){
+						if(autoAdd == '是'){
+							$('#client').val($('#clientName').val());
+						}
+					})
+					qiao.on('#dial','tap',function(){
+						
+						plus.device.dial( $('#number').val(), true );
+					})
+					qiao.on('#btnok','tap',function(){
+						if($(this).text()=='修改'){
+							$('#client').removeAttr('readonly');
+							$('#clientName').removeAttr('readonly');
+							$('#address').removeAttr('readonly');
+							$('#handler').removeAttr('readonly');
+							$('#number').removeAttr('readonly');
+							$('#idNumber').removeAttr('readonly');
+							$(this).text('保存');
+							return;
+						}
+						if(!$('#client').val()){
+							if(!$('#clientName').val()){
+								mui.toast('往来单位不能为空');
+								return;
+							}
+							$('#client').val($('#clientName').val());
+						}
+						if(!$('#clientName').val()){
+							$('#clientName').val($('#client').val());
+						}
+						console.log(state);
+						if(state == 'add'){
+							upload();
+						}
+						
+						app.postData('client/saveClient.do',
+						{
+						client:$('#client').val(),
+						clientName:$('#clientName').val(),
+						address:$('#address').val(),
+						handler:$('#handler').val(),
+						number:$('#number').val(),
+						idNumber:$('#idNumber').val(),
+						oldClient:oldClient,
+						state:state,
+						operator:qiao.h.getItem("loginuser")},function(data){
+							console.log(JSON.stringify(data)); 
+							if(data.result == 'exists'){
+								mui.toast('该客户已存在');
+								return;
+							}
+							else if (data.result == 'success'){
+								mui.toast('保存成功');
+								qiao.h.fire(openBy,'addBack',{client:$('#client').val()});
+								mui.back();
+							}else{
+								mui.toast('保存失败');
+							}
+						})
+					})
+					qiao.on('.mbupload_addImg','tap',function(){
+						mui("#popover").popover("toggle");
+					})
+					qiao.on('.mbupload_cBtn','tap',function(){
+						var id = $(this).attr('_id');
+						$(' #li' + id).remove();
+						for(var i=0;i<files.length;i++){
+							if(files[i].id == id){
+								files[i].src = '';
+							}
+						}
+						if($('.mbupload_photoList').find('li').length < 2){
+			                $('.mbupload_photoList').hide();
+			                $('.mbupload_bgimg').show();
+			            }
+					})
+					
+				}
+				  
+				
+				
+				function appendByCamera() {
+					plus.camera.getCamera().captureImage(function(p) {
+						plus.io.resolveLocalFileSystemURL(p, function(entry) {
+							//$('#showimg').attr('src', entry.toLocalURL());
+							var id = Date.now();
+							var html = '<li id="li' + id + '"><div class="mbupload_photoCut"><img src="' 
+							+ entry.toLocalURL() + '" class="attchImg" alt="photo"></div>' +
+                      
+                        '<a href="javascript:;" class="mbupload_cBtn mbupload_pa mbupload_db" title="" _id="'+id+'">关闭</a></li>';
+                        files.push({src:entry.toLocalURL(),id:id});
+                        $('.mbupload_addPic').before(html);
+                        $('.mbupload_photoList').show();
+                        $('.mbupload_bgimg').hide();
+						}, function(e) {
+							outLine("读取拍照文件错误：" + e.message);
+						});
+						$('#content').hide();
+			
+						mui("#popover").popover("toggle");
+					});
+				}
+			
+				// 从相册添加文件
+				function appendByGallery() {
+					plus.gallery.pick(function(p) {
+						plus.io.resolveLocalFileSystemURL(p, function(entry) {
+							//$('#showimg').attr('src', entry.toLocalURL());
+							var id = Date.now();
+							var html = '<li id="li' + id + '"><div class="mbupload_photoCut"><img src="' 
+							+ entry.toLocalURL() + '" class="attchImg" alt="photo"></div>' +
+                      
+                        '<a href="javascript:;" class="mbupload_cBtn mbupload_pa mbupload_db" title="" _id="'+id+'">关闭</a></li>';
+                        files.push({src:entry.toLocalURL(),id:id});
+                        $('.mbupload_addPic').before(html);
+                        $('.mbupload_photoList').show();
+                        $('.mbupload_bgimg').hide();
+						}, function(e) {
+							outLine("读取相册文件错误：" + e.message);
+						});
+						$('#content').hide();
+			
+						mui("#popover").popover("toggle");
+					});
+				}
+				
+				function upload() {
+					if(!$('.attchImg')) {
+			
+						return;
+					}
+					console.log("开始上传：")
+					
+					var settings = app.getSettings();
+					var address = settings.address ? settings.address : '';
+					var account = settings.account ? settings.account : '';
+			
+					var port = settings.port ? settings.port : '';
+					var task = plus.uploader.createUpload('http://' + address + ':' + port + '/PSSWeb/client/clientUpload.do', {
+							method: "POST"
+						},
+						function(t, status) { //上传完成
+							if(status == 200) {
+								console.log("上传成功：" + t.responseText);
+			
+								
+							} else {
+								console.log("上传失败：" + status);
+							
+							}
+						}
+					);
+					
+					task.addData("uid", $('#client').val());
+					
+					  
+					console.log(files.length);
+					for(var i=0;i<files.length;i++){
+						if(files[i].src){
+							console.log(files[i].src);
+							task.addFile(files[i].src, {
+								key: files[i].id
+							});
+						}
+						
+					}
+					
+			  
+					task.start();
+				}
+			})
+		</script>
+	</body>
+
+</html>

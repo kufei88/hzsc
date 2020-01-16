@@ -1,0 +1,474 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/xtab.css" />
+		<link rel="stylesheet" href="css/table.css" />
+		<link rel="stylesheet" href="css/close.css" />
+		<link rel="stylesheet" href="myFonts/iconfont.css" />
+	</head>
+	<style>
+		#popover {
+			position: fixed;
+			min-width: 282px;
+			height: 350px;
+			top: 100px !important;
+			left: 50% !important;
+			margin-left: -141px;
+		}
+		#popoverFilter {
+			position: fixed;
+			min-width: 282px;
+			height: 170px;
+			top: 200px !important;
+			left: 50% !important;
+			margin-left: -141px;
+		}
+		.tableData {
+			height: 50px;
+		}
+		
+		.tag {
+			top: 0;
+			right: 0;
+			position: absolute;
+			width: 0;
+			height: 0;
+			border-top: 30px solid red;
+			border-left: 30px solid transparent;
+		}
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<h1 id="title" class="mui-title">选择商品</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			<button type="button" id="filter" class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
+				<span class="mui-icon iconfont icon-guolv"></span>
+			</button>
+		</header>
+		<div class="mui-content">
+			<div class="mui-bar" style="padding: 0;">
+			<div class="container" >
+				<div class="xtab-container" id="J_Tab">
+					<div class="xtab-nav-container">
+						<div class="xs-container">
+							<ul class="xs-content">
+
+							</ul>
+						</div>
+					</div>
+					<div class="xtab-btn-slide"></div>
+				</div>
+				<div id="mask" style="display:none"></div>
+			</div>
+			<div style="display:inline-flex; width:100%; padding-left:1px; padding-right:1px;">
+				<div class="mui-input-row" style="height:40px; flex-grow:4;">
+					<input type="text" id="searchContent" class="mui-input-clear s_font-size2" placeholder="请输入名称或拼音码" maxlength="100" style="height:100%; padding-right:32px;" />
+				</div>
+				<div style="height:40px; flex-grow:1;">
+					<input type="button" value="搜索" class="u_btn" style="width:100%; height:100%;" />
+				</div>
+			</div>
+			<div class="mui-row tableHeader" id="columnHeader">
+			
+					<div class="mui-col-sm-3 mui-col-xs-3 textCenter">名称</div>
+					<div class="mui-col-sm-3 mui-col-xs-3 textCenter">库存</div>
+					<div class="mui-col-sm-2 mui-col-xs-2 textCenter" id="orderHeader">订量</div>
+					<div class="mui-col-sm-2 mui-col-xs-2 textCenter" id="priceHeader">单价</div>
+					
+
+					<div class="mui-col-sm-2 mui-col-xs-2 textCenter">规格</div>
+
+					
+			</div>  
+			</div>
+			<div id="popover" class="mui-popover">
+
+				<div class="mui-content-padded">
+					<div style="padding: 0 1em;text-align:center" id="goodsname">
+						
+					</div>
+					<span class="close">+</span>
+					<form class="mui-input-group" style="margin-top: 10px;" id="selectform">
+						<div class="mui-input-row">
+							<label>数量：</label>
+							<input type="number" class="mui-input" id="number" placeholder="请输入数量">
+						</div>
+
+						<div class="mui-input-row">
+							<label>斤两：</label>
+							<input type="number" class="mui-input" id="weight" placeholder="请输入斤两">
+						</div>
+						<div class="mui-input-row">
+							<label>售价：</label>
+							<input type="number" class="mui-input" id="price" placeholder="请输入售价">
+						</div>
+						<div class="mui-input-row">
+							<label>单位：</label>
+							<input type="text" class="mui-input" id="unit" readonly="readonly">
+						</div>
+						<div class="mui-input-row">
+							<label>金额：</label>
+							<input type="text" class="mui-input" id="money" readonly="readonly">
+						</div>
+						<div class="mui-input-row" >
+							<label>备注：</label>
+							<input type="text" class="mui-input" id="remark" >
+						</div>
+						<div class="mui-input-row" style="display: none;">
+							<label>仓库：</label>
+							<input type="text" class="mui-input" id="storage" readonly="readonly">
+						</div>
+					</form>
+					<div id="add_div" class="operate ">
+						<button type="button" class="mui-btn mui-btn-blue mui-btn-block" id="add">确定</button>
+
+					</div>
+
+				</div>
+			</div>
+			
+			<div id="popoverFilter" class="mui-popover">
+
+				<div class="mui-content-padded">
+					<div style="padding: 0 1em;text-align:center" >
+						设置
+					</div>
+					<span class="closeSum">+</span>
+					<ul class="mui-table-view" style="margin: 10px 0;">
+						<li class="mui-table-view-cell">
+							<span>显示数量为0的商品</span>
+								<div class="mui-switch " id="showZero">
+									<div class="mui-switch-handle"></div>
+								</div>
+						<li>
+
+						
+					</ul>
+					<div id="add_div" class="operate ">
+						<button type="button" class="mui-btn mui-btn-blue mui-btn-block" id="btnFilterOk">确定</button>
+
+					</div>
+
+				</div>
+			</div>
+
+			<div class="mui-scroll" style="margin-top: 115px;">
+				
+
+				<ul class="mui-table-view" style="margin-top:10px;" id="goodsList">
+					
+				</ul>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="js/qiao.h.js"></script>
+		<script type="text/javascript" src="http://g.tbcdn.cn/??kissy/k/5.0.0/seed-debug.js"></script>
+		<script type="text/javascript" src="js/stockColumnsMap.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			var realprice = '0';
+			var tempTable = [];
+			var showHeader = false;
+			var client = '';
+			var columns = '';
+			mui.plusReady(function() {
+				
+				var self = plus.webview.currentWebview();
+				showHeader = self.showHeader;
+				client = self.client;
+				var openBy = self.openBy;
+				var selectGoodsCode = '';
+				var selectBatch = '';
+				var selectId = '';
+				if(!showHeader) {
+					$('#title').text('查库存');
+					$('#priceHeader').hide();
+					$('#orderHeader').hide();
+				} else {
+					
+					tempTable = JSON.parse(qiao.h.getItem(openBy+'tempTable'));
+				}
+				
+				if(!tempTable) {
+					tempTable = [];
+				}
+				if(qiao.h.getItem('showZero') == '1') {
+						$('#showZero').addClass('mui-active');
+					}
+				var typeList = [];
+				var currentType = '全部';
+				/*
+				app.postData('goods/getSelectStockColumns.do', {
+							
+						}, function(data) {
+
+							columns = data;  
+							var columnHeader = '';
+							data.forEach(function(item){
+								columnHeader += '<div class="mui-col-sm-'+item.width+' mui-col-xs-'+item.width+
+								' textCenter">'+item.titleName+'</div>';
+							})
+							$('#columnHeader').html(columnHeader);
+						})
+				*/
+				app.getData('goods/getGoodsType.do', {
+					operator: qiao.h.getItem('loginuser')
+				}, function(data) {
+					
+					var lis = '<li class="xtab-item">全部</li>';
+					typeList.push('全部');
+					data.forEach(function(item) {
+						lis += '<li class="xtab-item">' + item.type + '</li>';
+						typeList.push(item.type);
+					});
+
+					$('.xs-content').html(lis);
+					//currentType = data.length > 0 ? data[0].type : '';
+					getNotDeliverGoods('全部', '');
+					require.config({
+						packages: {
+							"kg": {
+								tag: "20140918",
+								base: "http://g.tbcdn.cn/kg/"
+							}
+						}
+					});
+					require("kg/xtab/1.0.0/index", function(XTab) {
+						var xtab = new XTab({
+							renderTo: "#J_Tab",
+							maskNode: "#mask",
+							headerTitle: "选择其它类别"
+						});
+						xtab.render();
+						xtab.switchTo(0);
+						xtab.on("switch", function(e) {
+							currentType = typeList[e.curIndex];
+							getNotDeliverGoods(typeList[e.curIndex], '');
+						})
+						xtab.on("switchchange", function(e) {
+
+						})
+					});
+				})
+				
+				qiao.on('#btnback', 'tap', function() {
+					mui.back();
+				})
+				qiao.on('#goodsList li', 'tap', function() {
+					if(showHeader) {
+						var _this = $(this);
+						$('#goodsname').html(_this.data('goodsname'));
+						selectGoodsCode = _this.data('goodscode');
+						selectBatch = _this.data('batch');
+						selectId = _this.data('id');
+						$('#number').val('');
+						$('#weight').val(0);
+						$('#unit').val(_this.data('unit'));
+						$('#price').val(_this.data('price'));
+						realprice = _this.data('realprice');
+						$('#money').val(0);
+						$('#storage').val(_this.data('storage'));
+						$('#remark').val('');
+
+						mui("#popover").popover("toggle");
+
+						setTimeout(function() {
+							document.getElementById('number').focus();
+						}, 100)
+					}
+
+				})
+				qiao.on('#filter','tap',function(){
+					mui("#popoverFilter").popover("toggle");
+				})
+				qiao.on('.u_btn', 'tap', function() {
+					content = $('#searchContent').val();
+					console.log(currentType);
+					getNotDeliverGoods(currentType, content);
+				})
+
+				window.addEventListener('back', function() {
+					getNotDeliverGoods(currentType, '');
+				})
+				qiao.on('#number', 'input', autocalc);
+				qiao.on('#price', 'input', autocalc);
+				qiao.on('#weight', 'input', autocalc);
+				qiao.on('.close', 'tap', function() {
+					mui("#popover").popover("toggle");
+				})
+				qiao.on('.closeSum', 'tap', function() {
+					mui("#popoverFilter").popover("toggle");
+				})
+				qiao.on('#btnFilterOk','tap',function(){
+					qiao.h.insertItem('showZero',$('#showZero').hasClass('mui-active')?'1':'0');
+					mui("#popoverFilter").popover("toggle");
+					getNotDeliverGoods(currentType, '');
+				})
+				qiao.on('#add', 'tap', function() {
+					if((!$('#number').val()) || ($('#number').val() == '0')) {
+						mui.toast('数量不能为0');
+						return;
+					}
+					
+					app.getSyncData('bill/getLastPrice.do',{goodsCode:selectGoodsCode},function(data){
+						realprice = data;
+					})
+					
+					var price = $('#weight').val()>0?$('#weight').val()*$('#price').val()/$('#number').val():$('#price').val();
+					
+					if ((openBy != 'sellOrder.html')&&((parseFloat(price) > parseFloat(realprice) * 1.2) ||
+						(parseFloat(price) < parseFloat(realprice) * 0.8))) {
+						mui.alert('单价有异常,是否输入错误');
+					}
+					if(openBy == 'deliverList'){
+						var jsonArray = [];
+						var jsonobject = {};
+						var sum = 0;
+						jsonobject.sourceCode = '';
+						jsonobject.goodsCode = selectGoodsCode;
+						jsonobject.weight = $('#weight').val();
+						jsonobject.unit = $('#unit').val();
+						jsonobject.number = $('#number').val();
+						jsonobject.price = $('#price').val();
+						jsonobject.storage = $('#storage').val();
+						jsonobject.remark = $('#remark').val();
+						jsonobject.sourceId = 0;
+						sum += $('#price').val()*$('#number').val();
+						jsonArray.push(jsonobject);
+						var jsona = {};
+						jsona.goods = jsonArray;
+						jsona.client = client;
+						jsona.sum = sum;
+						jsona.operator = qiao.h.getItem('loginuser');
+						jsona.billCode = '';
+						app.postData('bill/saveSellOrder.do',{jsonstr:JSON.stringify(jsona)},function(data){
+							if(data.result !=='success'){
+								mui.toast('添加失败');
+								
+								
+							}
+							else{
+								qiao.h.fire(openBy, 'addGoodsBack',{})
+							}
+						})
+					}
+					else{
+						qiao.h.fire(openBy, 'addGoodsBack', {
+						goodsCode: selectGoodsCode,
+						batch:selectBatch,
+						goodsName: $('#goodsname').html(),
+						price: $('#price').val(),
+						number: $('#number').val(),
+						weight: $('#weight').val(),
+						unit: $('#unit').val(),
+						type: '',
+						storage: $('#storage').val(),
+						remark:$('#remark').val()
+					});
+					}
+					
+					tempTable.push({
+						goodsCode: selectGoodsCode,
+						storage: $('#storage').val()
+					});
+					qiao.h.insertItem(openBy+'tempTable', JSON.stringify(tempTable));
+					$('#tag' + selectId).addClass('tag');
+					mui("#popover").popover("toggle");
+				})
+				
+			})
+
+			function autocalc() {
+				var tempStr = $(this).val();
+
+				if((tempStr.length > 1) && (tempStr.charAt(0) == '0') && (tempStr.charAt(1) != '.') && (tempStr.charAt(1) != '.')) {
+					$(this).val(tempStr.substring(1));
+
+				}
+				$('#money').val($('#weight').val()>0?($('#weight').val()*$('#price').val()).toFixed(2):($('#number').val() * $('#price').val()).toFixed(2));
+			}
+  
+			function getNotDeliverGoods(searchtype, search) {
+				console.log(searchtype);
+				app.getData('goods/getStockList.do', {
+					type: searchtype,
+					search: search,
+					showZero:qiao.h.getItem('showZero'),
+					operator:qiao.h.getItem('loginuser')
+				}, function(data) {
+					
+					var lis = '';
+					var count = 0;
+					var record = 0;
+					var type= '';
+					data.forEach(function(item) {
+						record++;
+						if((type=='')||(type!=item.type)){
+							type = item.type
+							count++;
+						}
+						
+						lis += genli(item, count,record);
+					})
+					$('#goodsList').html(lis);
+				})
+
+			}
+
+			function genli(item, count,record) {
+				var goodsLis = '';
+				goodsLis += '<li class="mui-row   tableData ' + (count % 2 == 0 ? 'odd' : '') + '" data-goodscode="' + item.goodsCode +
+					'" data-goodsname="' + item.type + item.goodsName;
+				goodsLis += '" data-id="' + record + '" ';
+
+				goodsLis += 'data-goodscode="' + item.goodsCode + '" ';  
+				goodsLis += 'data-goodsname="' + item.goodsName + '" ';
+				goodsLis += 'data-price="' + item.price + '" ';
+				goodsLis += 'data-realprice="' + item.price + '" ';
+				goodsLis += 'data-number="' + item.number + '" ';
+				goodsLis += 'data-storage="' + item.stock + '" ';  
+				goodsLis += 'data-unit="' + item.unit + '" ';
+				goodsLis += 'data-batch="' + item.batch + '" ';
+				goodsLis += ' style="position:relative">';   //为了显示tag
+				var have = false;
+				for(var i = 0; i < tempTable.length; i++) {
+					if((tempTable[i].goodsCode == item.goodsCode) && (tempTable[i].storage == item.stock)) {
+						console.log(item.goodsCode);
+						have = true;
+						break;
+					}  
+				}
+				goodsLis += '<span id="tag' + record + '" ' + (have ? 'class="tag"' : '') + '></span>';
+				
+				goodsLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">' + item.area + item.goodsName+(item.batch?'('+item.batch+')':'') + '</div>';
+				goodsLis += '<div class="mui-col-sm-3 mui-col-xs-3 textCenter">' + item.number.toFixed(2) + '</div>';
+				if(showHeader) {
+					goodsLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">' + item.orderNumber.toFixed(2) + '</div>';
+					goodsLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">' + item.price.toFixed(2) + '</div>';
+				}
+				goodsLis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">' + item.spec + '</div>';
+				/*
+				columns.forEach(function(item1){
+					//console.log(typeof item[stockColumnsMap[item1.fieldName]]);
+					goodsLis += '<div class="mui-col-sm-'+item1.width+' mui-col-xs-'+item1.width+' textCenter">' +
+					(typeof item[stockColumnsMap[item1.fieldName]] == 'number'? item[stockColumnsMap[item1.fieldName]].toFixed(2):
+					item[stockColumnsMap[item1.fieldName]]) + '</div>';
+				}) */
+				goodsLis += '</li>';
+				goodsLis += '<div class="mui-clearfix"></div>';
+				return goodsLis;
+			}
+		</script>
+	</body>
+
+</html>

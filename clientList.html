@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<style type="text/css">
+			.mui-content>.mui-table-view:first-child {
+				margin-top: -1px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 id="title" class="mui-title">选择客户</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			<a id="addClient" class="mui-icon mui-icon-plus mui-pull-right"></a>
+		</header>
+		
+		<!--下拉刷新容器-->
+		<div id="pullrefresh" class="mui-content">
+			<!--数据列表-->
+			<div style="display:inline-flex; width:100%; padding-left:1px; padding-right:1px;">
+					<div class="mui-input-row" style="height:40px; flex-grow:4;">
+						<input type="text" id="searchContent" class="mui-input-clear s_font-size2"
+							 placeholder="请输入客户或联系电话" maxlength="100" style="height:100%; padding-right:32px;" />
+					</div>
+					<div style="height:40px; flex-grow:1;">
+						<input type="button" value="搜索" class="u_btn" style="width:100%; height:100%;" />
+					</div>
+			</div>
+			<ul class="mui-table-view mui-table-view-chevron" id="clientList"></ul>
+		</div>
+		
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script>
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style:'circle',
+						callback: pulldownRefresh
+					},
+					up: {
+						auto:true,
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			initEvent();
+			var count = 0;
+			function pullupRefresh() {
+				
+				
+				app.getData('client/getClientList.do',{search:$('#searchContent').val(),page:count++,pageNumber:10},function(data){
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh((data.length==0));
+					var lis = '';
+					data.forEach(function(item){
+						lis += genli(item);
+					})
+					$('#clientList').append(lis);
+				})
+			}
+			
+			    
+			function genli(item){
+				var clientList = '';
+				clientList += '<li class="mui-table-view-cell" style="height:60px;padding:0 20px;"';
+				clientList += 'data-id="'+item.clientName+'" ';
+				clientList += '>';
+				clientList += '<div class="mui-row" style="height:100%;">';
+				clientList += '<div class="mui-col-sm-4 mui-col-xs-4" style="line-height:60px">';
+				clientList += item.clientPrincipal+'</div>';
+				clientList += '<div class="mui-col-sm-4 mui-col-xs-4" style="line-height:60px">';
+				clientList += item.shouldPay.toFixed(2)+'--'+item.debtDay+'</div>';
+				clientList += '<div class="mui-col-sm-4 mui-col-xs-4" style="line-height:60px">';
+				clientList += item.maxDebt.toFixed(2)+'--'+item.payDate+'</div>';
+				clientList += '</div>';
+				clientList += '</li>';
+				return clientList;
+			}
+			
+			function initEvent(){
+				qiao.on('#btnback','tap',function(){
+					mui.back();
+				})
+				qiao.on('#clientList li','tap',function(){
+					var clientOpenBy = qiao.h.getItem('clientOpenBy');
+					var type = qiao.h.getItem('selectClientType');
+					if (type == 'sellHistory'){
+							
+							var client = $(this).data('id');
+							//qiao.h.delItem('sellhistoryclient');
+							
+							qiao.h.insertItem('sellhistoryclient',client+'');
+							
+							qiao.h.open('sellHistory','sellHistory.html',{
+								client:$(this).data('id')
+							});
+						}else{
+							qiao.h.fire(clientOpenBy,'selectClient',{selectClient:$(this).data('id')});
+							mui.back();
+						}
+					
+				})
+				qiao.on('.u_btn','tap',function(){
+					content = $('#searchContent').val();
+					//search(begindate, enddate, $('#searchContent').val(), totalType, storage);
+					count = 0;
+					mui('#pullrefresh').pullRefresh().refresh(true);
+					$('#clientList').empty();
+					pullupRefresh();
+					document.activeElement.blur();
+					return false;
+				})
+				
+				qiao.on('#addClient','tap',function(){
+					qiao.h.open('addClient','addClient.html',{openBy:'clientList',state:'add'});
+				})
+				window.addEventListener('addBack',function(event){
+					count = 0;
+					mui('#pullrefresh').pullRefresh().refresh(true);
+					$('#clientList').empty();
+					$('#searchContent').val(event.detail.client);
+					pullupRefresh();
+					$('#searchContent').val('');
+				})
+			}
+  
+			function addData() {
+				var table = document.body.querySelector('.mui-table-view');
+				var cells = document.body.querySelectorAll('.mui-table-view-cell');
+				for(var i = cells.length, len = i + 5; i < len; i++) {
+					var li = document.createElement('li');
+					li.className = 'mui-table-view-cell';
+					li.innerHTML = '<a class="mui-navigate-right">Item ' + (i + 1) + '</a>';
+					//下拉刷新，新纪录插到最前面；
+					table.insertBefore(li, table.firstChild);
+				}
+			}
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				mui('#pullrefresh').pullRefresh().endPulldown();
+			}
+
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,198 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/iconfont.css" />
+		<link rel="stylesheet" href="css/table.css" />
+	</head>
+	<style>
+		.selectColumns {
+			padding: 0;
+			margin: 0;
+		}
+		
+		.cell {
+			width: 50%;
+			float: left;
+			
+			
+		}
+		.cell-pad{
+			padding: 10px;
+		}
+		.mui-table-view-cell {
+			padding: 0;
+		}
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+			</button>
+			<h1 class="mui-title" id="title">设置库存查询显示列</h1>
+			<button type="button" id="btnok" 
+				class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
+				保存
+			</button>
+		</header>
+		<div class="mui-content">
+			<div class="mui-row tableHeader">
+			
+					<div class="mui-col-sm-6 mui-col-xs-6 textCenter">列名</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 textCenter">宽度</div>
+					
+
+					
+			</div> 
+			<ul class="mui-table-view">
+				
+				<li class="mui-table-view-cell">
+					<div class="cell cell-pad">
+						<select class="selectColumns" id="order1" data-order="1">
+							<option value='' disabled selected style='display:none;'>选择显示列</option>
+
+						</select>
+					</div>
+					<div class="cell ">
+						<input type="number" class="mui-input" style="margin:0;border-bottom: none;border-radius: 0;" id="width1" >
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="cell cell-pad">
+						<select class="selectColumns" id="order2" data-order="2">
+							<option value='' disabled selected style='display:none;'>选择显示列</option>
+						</select>
+					</div>
+					<div class="cell ">
+						<input type="number" class="mui-input" style="margin:0;border-bottom: none;border-radius: 0;" id="width2" >
+					</div>
+				</li>	
+				<li class="mui-table-view-cell">
+					<div class="cell cell-pad">
+						<select class="selectColumns" id="order3" data-order="3">
+							<option value='' disabled selected style='display:none;'>选择显示列</option>
+
+						</select>
+					</div>
+					<div class="cell ">
+						<input type="number" class="mui-input" style="margin:0;border-bottom: none;border-radius: 0;" id="width3" >
+					</div>
+
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="cell cell-pad">
+						<select class="selectColumns" id="order4" data-order="4">
+							<option value='' disabled selected style='display:none;'>选择显示列</option>
+						</select>
+					</div>
+					<div class="cell ">
+						<input type="number" class="mui-input" style="margin:0;border-bottom: none;border-radius: 0;" id="width4" >
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="cell cell-pad">
+						<select class="selectColumns" id="order5" data-order="5">
+							<option value='' disabled selected style='display:none;'>选择显示列</option>
+						</select>
+					</div>
+					<div class="cell ">
+						<input type="number" class="mui-input" style="margin:0;border-bottom: none;border-radius: 0;" id="width5" >
+					</div>
+				</li>
+			</ul>
+			<p style="font-size: 18px;margin:5px">宽度之和不能大于12</p>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script>
+			mui.init();
+
+			mui.plusReady(function() {
+				getSelectOption();
+				initSave();
+			})
+
+			function initSave() {
+				$('#btnok').click(function() {
+					var select = $('select');
+					var list = [];
+					select.each(function() {
+
+						if($(this).val()) {
+							var selectColumns = {};
+							selectColumns.fieldName = $(this).val();
+							selectColumns.order = $(this).data("order");
+							selectColumns.titleName = $(this).find('option:selected').text();
+							selectColumns.width = $('#width'+$(this).data("order")).val();
+							list.push(selectColumns);
+						}
+
+					})
+
+					if(list.length == 0) {
+						mui.alert('请选择显示列');
+					} else {
+						var settings = app.getSettings();
+						var address = settings.address ? settings.address : '';
+						var account = settings.account ? settings.account : '';
+						var port = settings.port ? settings.port : '';
+						console.log(JSON.stringify(list));  
+						var data = {
+							DatabaseName: account,
+							columns: JSON.stringify(list)
+						}
+						app.postData('goods/saveStockColumns.do', data, function(data) {
+							if(data.result == 'true') {
+								mui.alert('保存成功');
+								mui.back();
+							} else {
+								mui.alert('保存失败');
+							}
+						})
+					}
+				})
+			}
+
+			function getSelectOption() {
+				var settings = app.getSettings();
+				var address = settings.address ? settings.address : '';
+				var account = settings.account ? settings.account : '';
+				var port = settings.port ? settings.port : '';
+				var data = {
+					DatabaseName: account
+				}
+				app.postData('goods/getStockColumns.do',
+					data,
+					function(data) {
+						var select = $('select');
+						var option = "<option value='' '>选择显示列</option> ";
+						for(var i = 0; i < data.length; i++) {
+							option = option + "<option value='" + data[i].fieldName + "'>" + data[i].titleName + "</option>";
+						}
+						for(var i = 0; i < select.length; i++) {
+							select[i].innerHTML = option;
+						}
+
+						app.postData('goods/getSelectStockColumns.do', {
+							DatabaseName: account
+						}, function(data) {
+
+							for(var i = 0; i < data.length; i++) {
+
+								$('#order' + data[i].order).val(data[i].fieldName);
+								$('#width' + data[i].order).val(data[i].width);
+							}
+						})
+
+					})
+			}
+		</script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+	</body>
+
+</html>

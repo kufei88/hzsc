@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/table.css" />
+		<link rel="stylesheet" href="myFonts/iconfont.css" />
+		<link rel="stylesheet" href="css/xtab.css" />
+	</head>
+	<style>
+		.dateRight{
+			
+		}
+		.billDetail{
+			background: #fff;
+			padding: 5px 10px;
+		}
+		
+		#billList{
+			background: #f0f0f0;
+			padding: 5px 0;
+		}
+		#billList li{
+			
+			padding: 0;
+		}
+		.header,.bottom{
+			background: #FFFFFF;
+			padding: 10px;
+		}
+		.tableData {
+			height: 50px;
+		}
+		#info{
+			padding: 5px;
+			color: #6D6D72;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header" >
+			<h1 id="title" class="mui-title">销量评估分析</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			
+		</header>
+		<div class="mui-content">
+			<div class="mui-bar" style="padding: 0;">
+			<div class="container">
+			  <div class="xtab-container"  id="J_Tab">
+			  <div class="xtab-nav-container">
+			    <div class="xs-container">
+			      <ul class="xs-content">
+			        
+			      </ul>
+			    </div>
+			  </div>
+			  <div class="xtab-btn-slide"></div>
+			</div>
+			<div id="mask" style="display:none"></div>
+			</div>
+			<div style="background:#FFFFFF;margin-top: 1px;">
+			<div id="selectBegin" class="mui-table-view-cell  mui-left" style="width: 50%;">
+				<div class="mui-navigate-right">日期:<span id="beginDate">111</span></div>
+			</div>
+			</div>
+		    <div class="mui-row tableHeader" >
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">物品</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">订量</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">订发量</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">未订发量</div>
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">库存</div>  
+				<div class="mui-col-sm-2 mui-col-xs-2 textCenter">建议进货</div>
+				
+			</div>
+			</div>
+		    <ul class="mui-table-view"  id="billList" style="margin-top: 120px;">
+				
+			</ul>
+		</div>
+		
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="http://g.tbcdn.cn/??kissy/k/5.0.0/seed-debug.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>
+		<script type="text/javascript">
+			mui.init()
+			var delBillAuth = 0;
+			var editBillAuth = 0;
+			var beginDate = '';
+			var endDate = '';
+			var client = '';
+			var type = '';
+			var goodsName = '';
+			var operator = '';
+			var area = '';
+			mui.plusReady(function(){
+				var typeList = [];
+				var currentType = '全部';
+				app.getData('goods/getGoodsType.do',{operator:qiao.h.getItem('loginuser')},function(data){
+					var lis = '<li class="xtab-item">全部</li>';
+					typeList.push('全部');
+					data.forEach(function(item){
+						if(item.type != '全部物品'){
+							lis += '<li class="xtab-item">'+item.type+'</li>';
+							typeList.push(item.type);
+						}
+						
+					});
+					
+					$('.xs-content').html(lis);  
+				//	currentType = data.length>0?data[0].type:'';
+					search(beginDate,currentType);    
+					require.config({
+				        packages: {
+				            "kg":{
+				                tag: "20140918",
+				                 base: "http://g.tbcdn.cn/kg/"
+				            }
+				        }
+				    });
+				   require("kg/xtab/1.0.0/index",function(XTab){
+				      var xtab = new XTab({
+				        renderTo:"#J_Tab",
+				        maskNode:"#mask",
+				        headerTitle:"选择其它类别"
+				      });
+				      xtab.render();
+				      xtab.switchTo(0);
+				      xtab.on("switch",function(e){
+				      	currentType = typeList[e.curIndex];
+				        search(beginDate,currentType);
+				      })
+				      xtab.on("switchchange",function(e){
+				       
+				      })
+				    });
+				})
+				initEvent();
+				beginDate = app.getNowDate();  
+				$('#beginDate').text(beginDate);
+				
+				
+				
+				
+				function initEvent(){
+					qiao.on('#selectBegin','tap',function(){
+						app.selectDate($('#beginDate').text(),function(result){
+							
+							$('#beginDate').text(result);
+							search($('#beginDate').text(),currentType);
+						})
+					})
+					
+					qiao.on('#btnback','tap',function(){
+						mui.back();
+					})
+					
+					
+					
+					
+					
+					
+					
+				}
+				
+				function search(beginDate,currentType){
+					console.log(beginDate);
+					app.getData('bill/getSellAssessList.do',{beginDate:beginDate,type:currentType},function(data){
+						//console.log(JSON.stringify(data));
+						var billCode = '';
+						var client = '';  
+						var sum = 0; 
+						var tempArr = [];
+						var lis = '';
+						var billDate ='';
+						var count =0;
+						var num = 0;
+						var weight = 0;
+						var sum = 0;
+						  
+						data.forEach(function(item){
+							count++;
+							num += item.number;
+							weight += item.weight;
+							sum += item.money;
+							lis += setLi(item,count);
+						})
+					//	lis += setLis(billCode,client,billDate,sum,tempArr);
+						$('#billList').html(lis);
+						  
+					})
+				}
+				
+				function setLi(item,count){
+					var lis = '';
+					    lis = '<li class="mui-row tableData '+(count%2==0?'odd':'')+'">';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+item.goodsName+'</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+item.orderNumber.toFixed(2)+'</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+item.orderSellNumber.toFixed(2)+'</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+item.notOrderNumber.toFixed(2)+'</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+item.stockNumber.toFixed(2)+'</div>';  
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+(item.suggestNumber>0?item.suggestNumber.toFixed(2):'0')+'</div>';
+						
+						lis += '</li>';
+					return lis;  
+				}
+				  
+				
+			})
+		</script>
+	</body>
+
+</html>

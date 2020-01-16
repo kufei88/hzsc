@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<style type="text/css">
+			.mui-content>.mui-table-view:first-child {
+				margin-top: -1px;
+			}
+			.mui-ellipsis{
+				width: 100px;
+				display: block;
+				float: left;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a id="back" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">客户销售历史</h1>
+		</header>
+		<!--下拉刷新容器-->
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+			<form action="" id="searchForm">
+				<div class="mui-input-row mui-search" style="height: 60px;" >   
+					
+					<input type="search" id="searchd" class="mui-input-clear" placeholder="请输入物品编码/名称"  style="height: 60px; line-height: 60px;">
+					
+				</div>
+			</form>
+			<!--数据列表-->
+			
+			<ul class="mui-table-view mui-table-view-chevron" id="todolist"></ul>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="js/mui.js" ></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script>
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					
+					up: {
+						auto:true,
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			var client = '';
+			var search = '';
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+				client = self.client;
+				console.log(qiao.h.getItem('sellHistoryClient1'));
+				console.log(client);
+				
+			})
+			
+			var count = 0;
+			document.getElementById("searchForm").onsubmit = function(){
+				search = document.getElementById("searchd").value;
+				
+				count = 0;
+				$('#todolist').empty();
+				
+				pullupRefresh();
+				return false;
+			}
+			function pullupRefresh() {
+					 
+		      		var data={
+								
+								search:search,
+								page:count++,
+								pageNumber:10,
+								client:qiao.h.getItem('sellhistoryclient')
+							 }
+		      		app.getData('report/getSellHistory.do',data,function(data){
+		      			
+		      			
+		      			mui('#pullrefresh').pullRefresh().endPullupToRefresh((data.length==0));
+		      			var table = $('#todolist');
+								
+						for (var i = 0; i < data.length; i++) {
+							
+							table.append(genLi(data[i]));
+						}
+		      		});
+					 //参数为true代表没有更多数据了。
+					
+				
+			}
+
+			
+			
+			
+			function genLi(data){
+				
+				
+				
+				var li = 
+					'<li class="mui-table-view-cell" >' +
+						
+						'<div class="mui-slider-handle">' + 
+							'<div class="mui-media-body">' + 
+								'<p >'+'<span class="mui-ellipsis" >日期:</span><span style="color:#000;font-size:18px">'+data.datetime+'</span></p>' + 
+								'<p><span class="mui-ellipsis">商品:</span><span style="color:#000;font-size:18px">'+data.goodCode + '('+data.stockGoodsName+')</span></p>'+
+								
+								'<p >'+'<span class="mui-ellipsis">销售数量:</span><span style="color:#000;font-size:18px">'+
+								data.stockGoodsNum+'('+data.unit+')</span></p>' +
+								'<p><span class="mui-ellipsis" >售价:</span><span style="color:#000;font-size:18px">'+data.stockGoodsPrice+'</span></p>'+
+							'</div>' + 
+						'</div>' +
+					'</li>';
+				
+				//alert(li);
+				return li;
+			}
+
+		</script>
+	</body>
+
+</html>

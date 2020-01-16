@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="myFonts/iconfont.css" />
+	</head>
+
+	<body>
+		<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">打印设置</h1>
+				<button type="button" id="btnSave" 
+				class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
+				保存
+			</button>
+			</div>
+		<div class="mui-content">
+			
+			<div class="mui-scroll">
+				<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<span>开单时直接打印</span>
+								<div class="mui-switch " id="sellprint">
+									<div class="mui-switch-handle"></div>
+								</div>
+							</li>
+							<li class="mui-table-view-cell">
+								<span>销售开单时打印服务器上的样式</span>
+								<div class="mui-switch " id="sellprintserver">
+									<div class="mui-switch-handle"></div>
+								</div>
+							</li>
+							<li class="mui-table-view-cell">
+							
+							<label style="width: 60%;margin: 0;height: 20px;">服务器上的打印样式：</label>
+							<select id="sellreportName" style="width: 40%;margin: 0;height: 20px;padding: 0;line-height: 20px;"></select>
+							
+							</li>
+							
+						</ul> 
+						<div class="mui-content-padded">
+							<p>直接打印需要连接蓝牙打印机</p>
+						</div>
+						
+						<ul class="mui-table-view" style="margin-top: 10px;">
+							<li class="mui-table-view-cell">
+								<span>选择打印机</span>
+							</li>
+							<li class="mui-table-view-cell">  
+								<input id="bt1" type="button" value="搜索设备" onclick="searchDevices('a')">
+							</li>
+							<li class="mui-table-view-cell">
+								<span class="mui-table-view-cell">未匹配的蓝牙设备</span>
+								<ul id="listNotMatch" class="mui-table-view">
+			
+								</ul>
+							</li>
+							<li class="mui-table-view-cell">
+								<span class="mui-table-view-cell">已匹配的蓝牙设备</span>
+								<ul id="listMatched" class="mui-table-view mui-table-view-radio">
+			
+								</ul>
+							</li>
+						</ul>
+			</div>
+		</div>
+		<script src="js/mui.min.js "></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="js/qiao.h.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script>
+			mui.init();
+			var device = null,
+				BAdapter = null,
+				BluetoothAdapter = null,
+				uuid = null,
+				main = null,
+				bluetoothSocket = null;
+			mui.plusReady(function() {
+				
+				var sellprint = document.getElementById("sellprint");
+				if(qiao.h.getItem('开单后打印') == 'true') {
+						$('#sellprint').addClass('mui-active');
+					}
+				if(qiao.h.getItem('销售打印服务器上的样式') == 'true') {
+						$('#sellprintserver').addClass('mui-active');
+					}
+				qiao.on('#btnSave','tap',function(){
+					qiao.h.insertItem('开单后打印', sellprint.classList.contains('mui-active') ? 'true' : 'false');
+					qiao.h.insertItem('销售打印服务器上的样式', sellprintserver.classList.contains('mui-active') ? 'true' : 'false');
+						qiao.h.insertItem('销售服务器上的打印样式',$('#sellreportName').val());
+					mui.back();
+				})
+				app.postData('goods/getReport.do',{username:qiao.h.getItem('username')},function(data){
+					var options = '';
+					var sellReports = data;
+					for(var i = 0; i < sellReports.length; i++) {
+						options = options + '<option value="' + sellReports[i].reportName + '">' + sellReports[i].reportName + '</option>';
+					}
+					$('#sellreportName').empty().append(options);
+					$('#sellreportName').val(qiao.h.getItem('销售服务器上的打印样式'));
+				})
+			})
+			
+			// 获取已搜索到的蓝牙设备
+			function getBluetoothDevices(){
+				plus.bluetooth.getBluetoothDevices({
+					success:function(e){
+						console.log(JSON.stringify(e));
+						var devices = e.devices;
+						console.log('get devices success: '+e.length);
+						for(var i in devices){
+							console.log(i+': '+JSON.stringify(devices[i]));
+						}
+					},
+					fail:function(e){
+						console.log('get devices failed: '+JSON.stringify(e));
+					}
+				});
+			}
+			
+			function startBluetoothDiscovery(){
+				plus.bluetooth.openBluetoothAdapter({
+					success:function(e){
+						console.log('open success: '+JSON.stringify(e));
+						plus.bluetooth.startBluetoothDevicesDiscovery({
+							success:function(e){
+								console.log('start discovery success: '+JSON.stringify(e));
+								listenerDeviceFound();
+							},
+							fail:function(e){
+								console.log('start discovery failed: '+JSON.stringify(e));
+							}
+						});
+					},
+					fail:function(e){
+						console.log('open failed: '+JSON.stringify(e));
+					}
+				});
+			}
+			
+			function listenerDeviceFound(){
+				plus.bluetooth.onBluetoothDeviceFound(function(e){
+					var devices = e.devices;
+					console.log('device found: '+e.length);
+					for(var i in devices){
+						console.log(i+': '+JSON.stringify(devices[i]));
+					}
+				});
+			}
+			
+			function searchDevices(address) {
+				 
+				//注册类
+				if(plus.os.name=='iOS'){
+					var UIPrintInteractionController = plus.ios.import('UIPrintInteractionController');
+					var UIPrintInfo = plus.ios.import("UIPrintInfo");
+					var NSURL = plus.ios.import("NSURL");
+					
+					//url字符串仅仅用来示例，可以使用plus.io获取
+					var url = NSURL.fileURLWithPath(plus.io.convertLocalFileSystemURL("_www/images/js.png"));
+					if ( UIPrintInteractionController.canPrintURL(url) ){
+					    var printInfo = UIPrintInfo.printInfo();
+					    printInfo.setJobName("dcloud.png");
+					    printInfo.setOutputType(1);
+					    var printInteractionController = UIPrintInteractionController.sharedPrintController()
+					    printInteractionController.setPrintInfo(printInfo);
+					    printInteractionController.setShowsNumberOfCopies(false);
+					    printInteractionController.setPrintingItem(url);
+					    printInteractionController.presentAnimatedcompletionHandler(true, null);
+					} else {
+					    alert("not support");
+					}
+				}
+				else{
+					var main = plus.android.runtimeMainActivity();
+				var IntentFilter = plus.android.importClass('android.content.IntentFilter');
+				var BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter");
+				var BluetoothDevice = plus.android.importClass("android.bluetooth.BluetoothDevice");
+				var BAdapter = BluetoothAdapter.getDefaultAdapter();
+				
+				var filter = new IntentFilter();
+				var bdevice = new BluetoothDevice();
+				var on = null;
+				var un = null;
+				var vlist1 = $('#listNotMatch').empty(); //注册容器用来显示未配对设备
+				
+				var vlist2 = $('#listMatched').empty();//清空容器
+				var button1 = document.getElementById('bt1');
+				button1.disabled = true;
+				button1.value = '正在搜索请稍候';
+				BAdapter.startDiscovery(); //开启搜索
+				var receiver;
+				var listNotMatch = [];
+				var listMatched = [];
+				receiver = plus.android.implements('io.dcloud.android.content.BroadcastReceiver', {
+					onReceive: function(context, intent) { //实现onReceiver回调函数
+						plus.android.importClass(intent); //通过intent实例引入intent类，方便以后的‘.’操作
+						
+						if(intent.getAction() == "android.bluetooth.adapter.action.DISCOVERY_FINISHED") {
+							main.unregisterReceiver(receiver); //取消监听
+							button1.disabled = false;
+							button1.value = '搜索设备';
+							console.log("搜索结束")
+						} else {
+							
+							BleDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+							console.log(BleDevice.getAddress());
+							console.log(BleDevice.getName());
+							if(!BleDevice){
+								return;
+							}
+							//判断是否配对
+							if( BleDevice && (BleDevice.getBondState() == bdevice.BOND_NONE)) {
+								
+								//参数如果跟取得的mac地址一样就配对
+								if(address == BleDevice.getAddress()) {
+									if(BleDevice.createBond()) { //配对命令.createBond()
+										
+										var select = qiao.h.getItem('打印机')==BleDevice.getAddress()?' mui-selected':'';
+										var li2 = '<li class="mui-table-view-cell '+select+'" id="'+BleDevice.getAddress()+
+										'" onClick="print(id,this)"><a class="mui-navigate-right">'+BleDevice.getName()+'</a></li>'; 
+										listMatched.push(BleDevice.getName());
+										vlist2.append(li2);  
+									}
+  
+								} else {
+									if(listNotMatch.indexOf(BleDevice.getName()) == -1) { //判断防止重复添加
+										var li1 = '<li class="mui-table-view-cell"  ><span>'+BleDevice.getName()+'</span><button id="'+BleDevice.getAddress()+
+										'" class="mui-pull-right" onclick="searchDevices(id)">匹配</button></li>'; //注册
+										listNotMatch.push(BleDevice.getName());
+										vlist1.append(li1);
+										
+
+									}
+
+								}
+							} else {
+								if(listMatched.indexOf(BleDevice.getName()) == -1) { //判断防止重复添加
+									console.log("已配对蓝牙设备：" + BleDevice.getName() + '    ' + BleDevice.getAddress());
+									var select = qiao.h.getItem('打印机')==BleDevice.getAddress()?' mui-selected':'';
+									un = BleDevice.getName();
+									var li2 = '<li class="mui-table-view-cell  '+select+'" id="'+BleDevice.getAddress()+
+										'" onClick="print(id,this)"><a class="mui-navigate-right">'+BleDevice.getName()+'</a></li>'; 
+									listMatched.push(BleDevice.getName());
+									vlist2.append(li2);
+								}
+							}
+						}
+
+					}
+				});
+
+				filter.addAction(bdevice.ACTION_FOUND);
+				filter.addAction(BAdapter.ACTION_DISCOVERY_STARTED);
+				filter.addAction(BAdapter.ACTION_DISCOVERY_FINISHED);
+				filter.addAction(BAdapter.ACTION_STATE_CHANGED);
+
+				main.registerReceiver(receiver, filter); //注册监听
+				}
+				
+				
+			}
+
+			function print(mac_address,obj) {
+				if(!mac_address) {
+					mui.toast('请选择蓝牙打印机');
+					return;
+				}
+
+				main = plus.android.runtimeMainActivity();
+				BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter");
+				UUID = plus.android.importClass("java.util.UUID");
+				uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+				BAdapter = BluetoothAdapter.getDefaultAdapter();
+				device = BAdapter.getRemoteDevice(mac_address);
+				plus.android.importClass(device);
+				bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(uuid);
+				plus.android.importClass(bluetoothSocket);
+
+				if(!bluetoothSocket.isConnected()) {
+					console.log('检测到设备未连接，尝试连接....');
+					bluetoothSocket.connect();
+				}
+
+				console.log('设备已连接');
+				qiao.h.insertItem('打印机',mac_address);
+				//obj.classList.add('mui-selected');
+				//console.log(obj.classList);
+				//this.classList.add('mui-selected');
+				if(bluetoothSocket.isConnected()) {
+					var outputStream = bluetoothSocket.getOutputStream();
+					plus.android.importClass(outputStream);
+					var string = "济胜软件打印测试\r\n济胜软件打印测试\r\n济胜软件打印测试\r\n济胜软件打印测试\r\n济胜软件打印测试\r\n济胜软件打印测试\r\n济胜软件打印测试\r\n\r\n\r\n\r\n\r\n";
+					var bytes = plus.android.invoke(string, 'getBytes', 'gbk');
+					outputStream.write(bytes);
+					outputStream.flush();
+					device = null //这里关键
+					bluetoothSocket.close(); //必须关闭蓝牙连接否则意外断开的话打印错误
+
+				}
+
+			}
+		</script>
+	</body>
+
+</html>

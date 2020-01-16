@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/table.css" />
+		<link rel="stylesheet" href="myFonts/iconfont.css" />
+	</head>
+	<style>
+		
+		.tableData{
+			height:auto;
+			 
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header" >
+			<h1 id="title" class="mui-title">销售明细</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-right"  id="btnMore">
+					<span class="mui-icon iconfont icon-gengduoxiao"></span>
+			</button>
+		</header>
+		<div class="mui-content">
+			<div id="popover" class="mui-popover" style="width: 80px; color: #007aff;right:0">
+			  <ul class="mui-table-view">
+			    <li class="mui-table-view-cell"><a href="#" id="btnedit" class="mui-icon iconfont icon-icon_edit ">修改</a></li>
+			    <li class="mui-table-view-cell"><a href="#" id="btnDel"  class="mui-icon iconfont icon-shanchu">删除</a></li>
+			    
+			    
+			  </ul>
+			</div>
+			<div class="mui-content-padded">
+					<h4 id="goodsTitle"></h4>
+			</div>
+			<div class="mui-scroll">
+				<ul class="mui-table-view mui-table-view-chevron" style="margin-top:0;" id="goodsList">
+
+				</ul>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>  
+		<script>
+			var billDate={};
+			var audite = false;
+			var billCode = '';
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+				billCode = self.billCode;
+				initBillData(self.billCode);
+				initEvent();
+				
+			})
+			function initBillData(billCode){
+				app.getData('bill/getSellDetailByCode.do',{billCode:billCode},function(data){
+						billDate = data;
+						$('#goodsTitle').text('客户:'+data[0].client);
+						if(data[0]){
+							audite = data[0].audite;
+						}
+						
+						var lis = '<li class="mui-row tableHeader">';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">名称</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">数量</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">斤两</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">单价</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">斤单价</div>';
+						lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">金额</div>';
+						lis += '</li>';
+						data.forEach(function(item,index){
+							lis += genLi(item,index);
+						})
+						console.log(lis);
+						$('#goodsList').html(lis);
+				})
+			}
+			function genLi(item,count){
+				var style = '" "';
+				if (count % 2 != 0){
+							style = '"background:#d9d9d9;padding:0"';
+						}
+				
+				var lis = '<li class="mui-row tableData" style='+style+ '>';
+					lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+item.goodsName+'</div>';
+					lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+(-item.number).toFixed(2)+'</div>';
+					lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+(-item.weight).toFixed(2)+'</div>';
+					lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+item.price.toFixed(2)+'</div>';
+					lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+(-item.weightPrice).toFixed(2)+'</div>';
+					lis += '<div class="mui-col-sm-2 mui-col-xs-2 textCenter">'+(-item.number*item.price).toFixed(2)+'</div>';
+					lis += '</li>';
+				return lis;
+			}
+			function initEvent(){
+				qiao.on('#btnback','tap',function(){
+					mui.back();
+				})
+				qiao.on('#btnedit','tap',function(){
+					if (audite){
+						mui.toast('该单据已审核,不能修改');
+						return;
+					}
+					mui('#popover').popover('toggle');
+					qiao.h.open('deliverList','deliverList.html',{modify:true,oldData:billDate,client:billDate[0].client});
+					
+				})
+				qiao.on('#btnDel','tap',function(){
+					if (audite){
+						mui.toast('该单据已审核,不能删除');
+						return;
+					}
+					mui('#popover').popover('toggle');
+					
+					mui.confirm('是否确认要删除该单据','提示',['是','否'],function(data){
+							if(data.index == 0){
+								app.getData('bill/delSell.do',{billCode:billDate[0].billCode,
+								operator:qiao.h.getItem('loginuser')},function(data){
+									if(data.result == 'success'){
+										mui.toast('删除成功');
+										qiao.h.fire('todayBill','reload');
+										window.history.back();
+										mui.back();
+										
+									
+									}
+								})
+							}
+						})
+				})
+				qiao.on('#btnMore','tap',function(){
+					
+					mui('#popover').popover('toggle');
+				})
+				window.addEventListener('back',function(){
+					
+					initBillData(billCode);
+				})
+			}
+		</script>
+	</body>
+</html>

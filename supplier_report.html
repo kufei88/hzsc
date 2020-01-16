@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/qiao.h.js"></script>
+		<link href="css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/table.css" />
+		<link rel="stylesheet" href="css/bootstrap-table.css" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	</head>
+	<style>
+		.date {
+			height: 50px;
+			line-height: 50px;
+			padding-left: 10px;
+		}
+		.money{
+			height: 40px;
+			line-height: 40px;
+			padding-left: 10px;
+			border: 1px solid #D3D3D3;
+		}
+	</style>
+
+	<body>
+
+		<div class="mui-content">
+			<div class="mui-row" style="border-bottom: 1px solid #DDDDDD;">
+
+				<div class="mui-row mui-col-xs-6">
+				<div class="mui-col-xs-3" style="margin-top: 5px;"><button id="previous">前一天</button></div>
+				<div id="selectBegin" class="date  mui-col-xs-9" style="border: none;">
+					<div class="mui-navigate-right">开始日期:<span id="beginDate"></span></div>
+				</div>
+			</div>
+			
+			<div class="mui-row mui-col-xs-6">
+			
+			<div id="selectEnd" class="date mui-col-xs-9" >
+				<div class="mui-navigate-right">结束日期:<span id="endDate"></span></div>
+				
+			</div>
+			<div class="mui-col-xs-3" style="margin-top: 5px;">	<button id="next">后一天</button></div>
+			</div>
+
+			</div>
+			<div style="padding: 0 10px;">
+				<button type="button" id="search" class="mui-btn mui-btn-block mui-btn-blue">查询</button>
+			</div>
+			<table id="table"  data-striped="true"   style="width: 800px;">
+
+			</table>
+			 <div class="mui-row" >
+			 	<div class="mui-col-xs-4 money" id="carriage"></div>
+			 	<div class="mui-col-xs-4 money" id="unload"></div>
+			 	<div class="mui-col-xs-4 money" id="refrige"></div>
+			 </div>
+			 <div class="mui-row" >
+			 	<div class="mui-col-xs-4 money" id="fo"></div>
+			 	<div class="mui-col-xs-4 money" id="other"></div>
+			 	<div class="mui-col-xs-4 money" id="service"></div>
+			 </div>
+			 <div class="mui-row" >
+			 	<div class="mui-col-xs-8 money" id="sumU"></div>
+			 	<div class="mui-col-xs-4 money" id="sum"></div>
+			 	
+			 </div>
+		</div>
+		</div>
+
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap-table.js"></script>
+		<script type="text/javascript" src="js/bootstrap-table-zh-CN.js"></script>
+		<script type="text/javascript" src="js/echarts.js"></script>
+		<script>
+			// 基于准备好的dom，初始化echarts实例
+			mui.init()
+			mui.plusReady(function() {
+				initDate();
+				initTable();
+				// 使用刚指定的配置项和数据显示图表。
+				qiao.on('#search', 'tap', function() {
+					var settings = app.getSettings();
+					var address = settings.address ? settings.address : '';
+
+					var port = settings.port ? settings.port : '';
+
+				//	$("#table").bootstrapTable('refresh', {
+				//		url: 'http://' + address + ':' + port + '/PSSWeb/supplier/getSupplierReport.do?' +
+				//			'beginDate=' + $('#beginDate').text() + '&endDate=' + $('#endDate').text() + '&client=' +
+				//			qiao.h.getItem('loginuser')
+				//	});
+
+					app.getData('supplier/getSupplierReport.do',{beginDate:$('#beginDate').text(),
+					endDate:$('#endDate').text(),client:qiao.h.getItem('loginuser')},function(data){
+						$("#table").bootstrapTable('load',data);
+						console.log(JSON.stringify(data));
+						sellSum = data[data.length-1]['销售金额'];
+						$('#carriage').text('运费:'+data[0]['运费'].toFixed(2));
+						$('#unload').text('卸车费:'+data[0]['卸车费'].toFixed(2));
+						$('#refrige').text('冷库费:'+data[0]['冷库费'].toFixed(2));
+						$('#fo').text('※:'+data[0]['其它'].toFixed(2));
+						$('#other').text('其他:'+data[0]['其他或借款'].toFixed(2));
+						$('#service').text('手续费:'+data[0]['手续费'].toFixed(2));
+						$('#sumU').text('实结金额:'+smalltoBIG((sellSum-data[0]['运费']-data[0]['卸车费']-
+						data[0]['冷库费']-data[0]['其它']-data[0]['其他或借款']-data[0]['手续费']).toFixed(0)));
+						$('#sum').text('￥:'+(sellSum-data[0]['运费']-data[0]['卸车费']-
+						data[0]['冷库费']-data[0]['其它']-data[0]['其他或借款']-data[0]['手续费']).toFixed(0));
+					})
+				})
+				
+				qiao.on('#previous','tap',function(){
+		        	var now = new Date($('#beginDate').text());
+		        	var pre = new Date(now.getTime()-1000*3600*24);
+		        	console.log(pre);
+		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
+				'-'+qiao.h.formatdate(pre.getDate());
+					$('#beginDate').text(pref);
+					var now = new Date($('#endDate').text());
+		        	var pre = new Date(now.getTime()-1000*3600*24);
+		        	console.log(pre);
+		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
+				'-'+qiao.h.formatdate(pre.getDate());
+					$('#endDate').text(pref);
+					initGoodsList();
+		        })
+		        qiao.on('#next','tap',function(){
+		        	var now = new Date($('#beginDate').text());
+		        	var pre = new Date(now.getTime()+1000*3600*24);
+		        	console.log(pre);
+		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
+				'-'+qiao.h.formatdate(pre.getDate());
+					$('#beginDate').text(pref);
+					var now = new Date($('#endDate').text());
+		        	var pre = new Date(now.getTime()+1000*3600*24);
+		        	console.log(pre);
+		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
+				'-'+qiao.h.formatdate(pre.getDate());
+					$('#endDate').text(pref);
+					initGoodsList();
+		        })
+			})
+			
+			function smalltoBIG(n)     
+		    {    
+		        var fraction = ['角', '分'];    
+		        var digit = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];    
+		        var unit = [ ['元', '万', '亿'], ['', '拾', '佰', '仟']  ];    
+		        var head = n < 0? '欠': '';    
+		        n = Math.abs(n);    
+		      
+		        var s = '';    
+		      
+		        for (var i = 0; i < fraction.length; i++)     
+		        {    
+		            s += (digit[Math.floor(n * 10 * Math.pow(10, i)) % 10] + fraction[i]).replace(/零./, '');    
+		        }    
+		        s = s || '整';    
+		        n = Math.floor(n);    
+		      
+		        for (var i = 0; i < unit[0].length && n > 0; i++)     
+		        {    
+		            var p = '';    
+		            for (var j = 0; j < unit[1].length && n > 0; j++)     
+		            {    
+		                p = digit[n % 10] + unit[1][j] + p;    
+		                n = Math.floor(n / 10);    
+		            }    
+		            s = p.replace(/(零.)*零$/, '').replace(/^$/, '零')  + unit[0][i] + s;    
+		        }    
+		        return head + s.replace(/(零.)*零元/, '元').replace(/(零.)+/g, '零').replace(/^整$/, '零元整');    
+		    } 
+
+			function initTable() {
+				
+				$('#table').bootstrapTable({
+					url: '',
+					
+						
+					columns: [{
+						title: '行号',
+						field: '',
+						formatter: function(value, row, index) {
+							
+							if(row['名称1']=='合计'){
+								return '合计'
+							}
+							return index + 1;
+						}
+					}, {
+						field: '名称',
+						title: '名称'
+					}, {
+						field: '期初数量',
+						title: '期初数量',
+						footerFormatter: function (value) {
+						        var count = 0;
+						        for (var i in value) {
+						            count += value[i]['期初数量'];
+						        }
+						        return count;
+						},
+						formatter:formatstr
+					}, {
+						field: '到货数量',
+						title: '到货数量',
+						formatter:formatstr
+					}, {
+						field: '销售数量',
+						title: '销售数量',
+						formatter:formatstr
+					}, {
+						field: '销售斤两',
+						title: '销售斤两',
+						formatter:formatstr
+					}, {
+						field: '销售均价',
+						title: '销售均价',
+						formatter:formatstr
+					}, {
+						field: '销售金额',
+						title: '销售金额',
+						formatter:formatstr
+					}, {
+						field: '结余数量',
+						title: '结余数量',
+						formatter:formatstr
+					}, {
+						field: '报损数量',
+						title: '报损',
+						formatter:formatstr
+					}, {
+						field: '补货数量',
+						title: '补货',
+						formatter:formatstr
+					}]
+					//formatLoadingMessage:'正在加载数据，请稍后...'
+				})
+			}
+			
+			function formatstr(value, row, index){
+				if(value){
+					return value.toFixed(2);
+				}
+				else{
+					return value;
+				}
+				
+				
+			}
+
+			function initDate() {
+				qiao.on('#selectBegin', 'tap', function() {
+					app.selectDate($('#beginDate').text(), function(result) {
+
+						$('#beginDate').text(result);
+
+					})
+				})
+
+				qiao.on('#selectEnd', 'tap', function() {
+					app.selectDate($('#endDate').text(), function(result) {
+
+						$('#endDate').text(result);
+
+					})
+				})
+				var now = new Date();
+				var begindate = now.getFullYear() + '-' + qiao.h.formatdate(now.getMonth() + 1) +
+					'-' + qiao.h.formatdate(now.getDate());
+				$('#beginDate').text(begindate);
+				var enddate = now.getFullYear() + '-' + qiao.h.formatdate(now.getMonth() + 1) +
+					'-' + qiao.h.formatdate(now.getDate());
+				$('#endDate').text(enddate);
+			}
+		</script>
+
+	</body>
+
+</html>

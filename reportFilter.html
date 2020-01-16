@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="myFonts/iconfont.css" />
+	</head>
+	<style>
+		select{
+			margin: 0;
+		}
+		.mui-row,.mui-navigate-right,.mui-table-view-cell{
+			height:50px;
+			line-height: 50px;
+			padding-top: 5px;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header" >
+				<h1 id="title" class="mui-title">过滤</h1>
+				<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+						<span class="mui-icon mui-icon-back"></span>返回
+				</button>
+				<button type="button" id="btnOk" 
+					class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
+					<span class="mui-icon iconfont icon-18queding"></span>
+				</button>
+			</header>
+			<div class="mui-content">
+				
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell  mui-left " >
+						<a class="mui-navigate-right mui-row" id="selectBegin">
+						<div class="mui-col-sm-4 mui-col-xs-4">开始日期:</div>
+							<div class="mui-col-sm-8 mui-col-xs-8 mui-row ">
+								<span id="beginDate" class="righttext"></span></div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell  mui-left " >
+						<a class="mui-navigate-right mui-row" id="selectEnd">
+						<div class="mui-col-sm-4 mui-col-xs-4">结束日期:</div>
+							<div class="mui-col-sm-8 mui-col-xs-8  ">
+								<span id="endDate" class="righttext"></span></div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell  mui-left " id="selectClient">
+						<a class=" mui-row" >
+						<div class="mui-col-sm-4 mui-col-xs-4">客户:</div>
+							<div class="mui-col-sm-6 mui-col-xs-6  " 
+								 style="height:100%">
+								<span id="resultClient" class="righttext"></span></div>
+							<div class="mui-col-sm-2 mui-col-xs-2  " id="clearClient"><span class="mui-icon iconfont icon-qingkong"></span></div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell  mui-left " >
+						<a class=" mui-row">
+						<div class="mui-col-sm-4 mui-col-xs-4">类别:</div>
+							<div class="mui-col-sm-8 mui-col-xs-8 ">
+								<select id="type"></select></div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell  mui-left  " >
+						<a class=" mui-row">
+						<div class="mui-col-sm-4 mui-col-xs-4">名称:</div>
+							<div class="mui-col-sm-8 mui-col-xs-8 ">
+								<input type="text" id="goodsName" /></div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell  mui-left mui-row " >
+						
+						<div class="mui-col-sm-4 mui-col-xs-4">操作员:</div>
+							<div class="mui-col-sm-8 mui-col-xs-8 ">
+								<select id="operator"></select></div>
+						
+					</li>
+					<li class="mui-table-view-cell  mui-left mui-row " >
+						
+						<div class="mui-col-sm-4 mui-col-xs-4">地区:</div>
+							<div class="mui-col-sm-8 mui-col-xs-8 ">
+								<select id="area"></select></div>
+						
+					</li>
+				</ul>
+				
+			</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>
+		<script>
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+				var beginDate = self.beginDate;
+				console.log(JSON.stringify(self));
+				var endDate = self.endDate;
+				var client = self.client;
+				var type = self.type;
+				var goodsName = self.goodsName;
+				var operator = self.operator;
+				var area = self.area;
+				$('#beginDate').text(beginDate);
+				$('#endDate').text(endDate);
+				$('#resultClient').text(client);
+				$('#goodsName').val(goodsName);
+				initEvent();
+				initType();  
+				initOperator();
+				initArea();
+				function initType(){
+					app.getData('goods/getAllGoodsType.do',{},function(data){
+						var options = '';
+						data.forEach(function(item){
+							options += '<option>'+item.type+'</option>';
+						})
+						$('#type').html(options);
+						$('#type').val(type);
+					})
+				}  
+				function initOperator(){
+					app.getData('wechat/getAllOperator.do',{},function(data){
+						var options = '<option>全部</option>';
+						data.forEach(function(item){
+							options += '<option>'+item.operator+'</option>';
+						})
+						$('#operator').html(options);
+						$('#operator').val(operator);
+					})
+				}
+				function initArea(){
+					app.getData('client/getAreaList.do',{},function(data){
+						var options = '';
+						data.forEach(function(item){
+							options += '<option>'+item.area+'</option>';
+						})
+						$('#area').html(options);
+						$('#area').val(area);
+					})
+				}
+				function initEvent(){
+					qiao.on('#selectBegin','tap',function(){
+						app.selectDate($('#beginDate').text(),function(result){
+							$('#beginDate').text(result);
+							
+						})
+					})
+					qiao.on('#selectEnd','tap',function(){
+						app.selectDate($('#endDate').text(),function(result){
+							$('#endDate').text(result);
+							
+						})
+					})
+					qiao.on('#selectClient', 'tap', function() {
+						qiao.h.insertItem('clientOpenBy','reportFilter');
+						qiao.h.insertItem('selectClientType', '');
+						qiao.h.open('clientList', 'clientList.html');
+					})
+					window.addEventListener('selectClient', function(event) {
+						//console.log(JSON.stringify(event.detail.selectClient));
+						
+						$('#resultClient').text(event.detail.selectClient);
+					})
+					qiao.on('#clearClient','tap',function(){
+						
+						$('#resultClient').text('');
+						return false;
+					})
+					qiao.on('#btnback','tap',function(){
+						mui.back();
+					})
+					qiao.on('#btnOk','tap',function(){
+						qiao.h.fire('report','filter',{
+							beginDate:$('#beginDate').text(),
+							endDate:$('#endDate').text(),
+							client:$('#resultClient').text(),
+							type:$('#type').val(),
+							goodsName:$('#goodsName').val(),
+							operator:$('#operator').val(),
+							area:$('#area').val()
+						})
+						mui.back();
+					})
+				}
+			})
+		</script>
+	</body>
+</html>
