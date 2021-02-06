@@ -3,8 +3,8 @@
     "id" : "H51D5BF64", /*应用的标识，创建应用时自动生成，勿手动修改*/
     "name" : "hzsc", /*应用名称，程序桌面图标名称*/
     "version" : {
-        "name" : "1.5.6", /*应用版本名称*/
-        "code" : "55"
+        "name" : "1.6.2", /*应用版本名称*/
+        "code" : "61"
     },
     "description" : "果蔬批发平台", /*应用描述信息*/
     "icons" : {
@@ -361,7 +361,8 @@
 					"clientList.html",
 					"performanceTrend.html",
 					"printSetting.html",
-					"setStockColumns.html"
+					"setStockColumns.html",
+					"market.html"
 				],
 				"priority": 0
 			},

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<h1 id="title" class="mui-title">产地行情</h1>
+			<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left" id="btnback">
+					<span class="mui-icon mui-icon-back"></span>返回
+			</button>
+			
+		</header>
+		<div class="mui-content">
+			<ul class="mui-table-view mui-table-view-chevron">
+						<li class="mui-table-view-cell" id="kunmin">
+							<a href="#" class="mui-navigate-right"><span class=" iconfont icon-kucun"></span>农兴菜价网</a>
+						</li>
+						<li class="mui-table-view-cell" id="lvguowang">
+							<a href="#" class="mui-navigate-right"><span class=" iconfont icon-jinri"></span> 绿果网</a>
+						</li>
+						<li class="mui-table-view-cell" id="shandong">
+							<a href="#" class="mui-navigate-right"><span class=" iconfont icon-xiaoshouchaxun"></span>蔬菜商情网</a>
+						</li>
+					</ul>
+		</div>
+		<script src="js/mui.min.js "></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
+		<script type="text/javascript" src="js/qiao.h.js" ></script>
+		<script>
+			mui.init();
+			mui.plusReady(function() {
+				qiao.on('#kunmin','tap',function(){
+					
+					plus.runtime.openURL('http://www.nxin.com.cn/markettest/historydeal.html?market=1');  
+				})
+				qiao.on('#lvguowang','tap',function(){
+					
+					plus.runtime.openURL('https://m.lvguo.net/');  
+				})
+				qiao.on('#shandong','tap',function(){
+					
+					plus.runtime.openURL('http://www.shucai123.com/price/area/4515/t1');  
+				})
+				qiao.on('#btnback', 'tap', function() {
+					mui.back();
+				})
+				
+			})
+		</script>
+	</body>
+</html>

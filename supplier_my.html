@@ -7,202 +7,235 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href="myFonts/iconfont.css" />
+		<link rel="stylesheet" href="css/mui.picker.min.css" />
 	</head>
 	<style>
-			html,
-			body {
-				background-color: #efeff4;
-			}
-			.mui-views,
-			.mui-view,
-			.mui-pages,
-			.mui-page,
-			.mui-page-content {
-				position: absolute;
-				left: 0;
-				right: 0;
-				top: 0;
-				bottom: 0;
-				width: 100%;
-				height: 100%;
-				background-color: #efeff4;
-			}
-			.mui-pages {
-				top: 46px;
-				height: auto;
-			}
-			.mui-scroll-wrapper,
-			.mui-scroll {
-				background-color: #efeff4;
-			}
-			.mui-page.mui-transitioning {
-				-webkit-transition: -webkit-transform 300ms ease;
-				transition: transform 300ms ease;
-			}
-			.mui-page-left {
-				-webkit-transform: translate3d(0, 0, 0);
-				transform: translate3d(0, 0, 0);
-			}
-			.mui-ios .mui-page-left {
-				-webkit-transform: translate3d(-20%, 0, 0);
-				transform: translate3d(-20%, 0, 0);
-			}
-			.mui-navbar {
-				position: fixed;
-				right: 0;
-				left: 0;
-				z-index: 10;
-				height: 44px;
-				background-color: #f7f7f8;
-			}
-			.mui-navbar .mui-bar {
-				position: absolute;
-				background: transparent;
-				text-align: center;
-			}
-			.mui-android .mui-navbar-inner.mui-navbar-left {
-				opacity: 0;
-			}
-			.mui-ios .mui-navbar-left .mui-left,
-			.mui-ios .mui-navbar-left .mui-center,
-			.mui-ios .mui-navbar-left .mui-right {
-				opacity: 0;
-			}
-			.mui-navbar .mui-btn-nav {
-				-webkit-transition: none;
-				transition: none;
-				-webkit-transition-duration: .0s;
-				transition-duration: .0s;
-			}
-			.mui-navbar .mui-bar .mui-title {
-				display: inline-block;
-				width: auto;
-			}
-			.mui-page-shadow {
-				position: absolute;
-				right: 100%;
-				top: 0;
-				width: 16px;
-				height: 100%;
-				z-index: -1;
-				content: '';
-			}
-			.mui-page-shadow {
-				background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
-				background: linear-gradient(to right, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
-			}
-			.mui-navbar-inner.mui-transitioning,
-			.mui-navbar-inner .mui-transitioning {
-				-webkit-transition: opacity 300ms ease, -webkit-transform 300ms ease;
-				transition: opacity 300ms ease, transform 300ms ease;
-			}
-			.mui-page {
-				display: none;
-			}
-			.mui-pages .mui-page {
-				display: block;
-			}
-			.mui-page .mui-table-view:first-child {
-				margin-top: 15px;
-			}
-			.mui-page .mui-table-view:last-child {
-				margin-bottom: 30px;
-			}
-			.mui-table-view {
-				margin-top: 20px;
-			}
-			
-			.mui-table-view span.mui-pull-right {
-				color: #999;
-			}
-			.mui-table-view-divider {
-				background-color: #efeff4;
-				font-size: 14px;
-			}
-			.mui-table-view-divider:before,
-			.mui-table-view-divider:after {
-				height: 0;
-			}
-			.head {
-				height: 40px;
-			}
-			#head {
-				line-height: 40px;
-			}
-			.head-img {
-				width: 40px;
-				height: 40px;
-			}
-			#head-img1 {
-				position: absolute;
-				bottom: 10px;
-				right: 40px;
-				width: 40px;
-				height: 40px;
-			}
-			.update {
-				font-style: normal;
-				color: #999999;
-				margin-right: -25px;
-				font-size: 15px
-			}
-			.mui-fullscreen {
-				position: fixed;
-				z-index: 20;
-				background-color: #000;
-			}
-			.mui-ios .mui-navbar .mui-bar .mui-title {
-				position: static;
-			}
-			/*问题反馈在setting页面单独的css*/
-			#feedback .mui-popover{
-				position: fixed;
-			}
-			#feedback .mui-table-view:last-child {
-			    margin-bottom: 0px;
-			}
-			#feedback .mui-table-view:first-child {
-			    margin-top: 0px;
-			}
-			/*问题反馈在setting页面单独的css==end*/
-			
-		</style>
-	<body>
+		html,
+		body {
+			background-color: #efeff4;
+		}
 		
+		.mui-views,
+		.mui-view,
+		.mui-pages,
+		.mui-page,
+		.mui-page-content {
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+			height: 100%;
+			background-color: #efeff4;
+		}
+		
+		.mui-pages {
+			top: 46px;
+			height: auto;
+		}
+		
+		.mui-scroll-wrapper,
+		.mui-scroll {
+			background-color: #efeff4;
+		}
+		
+		.mui-page.mui-transitioning {
+			-webkit-transition: -webkit-transform 300ms ease;
+			transition: transform 300ms ease;
+		}
+		
+		.mui-page-left {
+			-webkit-transform: translate3d(0, 0, 0);
+			transform: translate3d(0, 0, 0);
+		}
+		
+		.mui-ios .mui-page-left {
+			-webkit-transform: translate3d(-20%, 0, 0);
+			transform: translate3d(-20%, 0, 0);
+		}
+		
+		.mui-navbar {
+			position: fixed;
+			right: 0;
+			left: 0;
+			z-index: 10;
+			height: 44px;
+			background-color: #f7f7f8;
+		}
+		
+		.mui-navbar .mui-bar {
+			position: absolute;
+			background: transparent;
+			text-align: center;
+		}
+		
+		.mui-android .mui-navbar-inner.mui-navbar-left {
+			opacity: 0;
+		}
+		
+		.mui-ios .mui-navbar-left .mui-left,
+		.mui-ios .mui-navbar-left .mui-center,
+		.mui-ios .mui-navbar-left .mui-right {
+			opacity: 0;
+		}
+		
+		.mui-navbar .mui-btn-nav {
+			-webkit-transition: none;
+			transition: none;
+			-webkit-transition-duration: .0s;
+			transition-duration: .0s;
+		}
+		
+		.mui-navbar .mui-bar .mui-title {
+			display: inline-block;
+			width: auto;
+		}
+		
+		.mui-page-shadow {
+			position: absolute;
+			right: 100%;
+			top: 0;
+			width: 16px;
+			height: 100%;
+			z-index: -1;
+			content: '';
+		}
+		
+		.mui-page-shadow {
+			background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+			background: linear-gradient(to right, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+		}
+		
+		.mui-navbar-inner.mui-transitioning,
+		.mui-navbar-inner .mui-transitioning {
+			-webkit-transition: opacity 300ms ease, -webkit-transform 300ms ease;
+			transition: opacity 300ms ease, transform 300ms ease;
+		}
+		
+		.mui-page {
+			display: none;
+		}
+		
+		.mui-pages .mui-page {
+			display: block;
+		}
+		
+		.mui-page .mui-table-view:first-child {
+			margin-top: 15px;
+		}
+		
+		.mui-page .mui-table-view:last-child {
+			margin-bottom: 30px;
+		}
+		
+		.mui-table-view {
+			margin-top: 20px;
+		}
+		
+		.mui-table-view span.mui-pull-right {
+			color: #999;
+		}
+		
+		.mui-table-view-divider {
+			background-color: #efeff4;
+			font-size: 14px;
+		}
+		
+		.mui-table-view-divider:before,
+		.mui-table-view-divider:after {
+			height: 0;
+		}
+		
+		.head {
+			height: 40px;
+		}
+		
+		#head {
+			line-height: 40px;
+		}
+		
+		.head-img {
+			width: 40px;
+			height: 40px;
+		}
+		
+		#head-img1 {
+			position: absolute;
+			bottom: 10px;
+			right: 40px;
+			width: 40px;
+			height: 40px;
+		}
+		
+		.update {
+			font-style: normal;
+			color: #999999;
+			margin-right: -25px;
+			font-size: 15px
+		}
+		
+		.mui-fullscreen {
+			position: fixed;
+			z-index: 20;
+			background-color: #000;
+		}
+		
+		.mui-ios .mui-navbar .mui-bar .mui-title {
+			position: static;
+		}
+		/*问题反馈在setting页面单独的css*/
+		
+		#feedback .mui-popover {
+			position: fixed;
+		}
+		
+		#feedback .mui-table-view:last-child {
+			margin-bottom: 0px;
+		}
+		
+		#feedback .mui-table-view:first-child {
+			margin-top: 0px;
+		}
+		/*问题反馈在setting页面单独的css==end*/
+	</style>
+
+	<body>
+
 		<div class="mui-content">
-			<div >  
+			<div>
 				<div class="mui-scroll">
 					<ul class="mui-table-view mui-table-view-chevron">
 						<li class="mui-table-view-cell mui-media">
-							
-								<img class="mui-media-object mui-pull-left head-img" id="head-img" src="img/111.ico">
-								<div class="mui-media-body">
-									济胜软件
-									<p class='mui-ellipsis' id="username">账号:hellomui</p>
-								</div>
-							
-						</li>  
-					</ul>
-					
-					
-					
-					
-					<ul class="mui-table-view mui-table-view-chevron">
-						
-						<li class="mui-table-view-cell" id="idProportion">
-							<a href="#" class="mui-navigate-right"><span 
-								class=" iconfont icon-zhanbi"></span> 销量单品占比</a>
+
+							<img class="mui-media-object mui-pull-left head-img" id="head-img" src="img/111.ico">
+							<div class="mui-media-body">
+								济胜软件
+								<p class='mui-ellipsis' id="username">账号:hellomui</p>
+							</div>
+
 						</li>
-						
 					</ul>
 					
-					
-					
-					
 					<ul class="mui-table-view mui-table-view-chevron">
-						
+						<li class="mui-table-view-cell"  id="market">
+							<a href="#" class="mui-navigate-right"><span class=" iconfont icon-chandi"></span> 产地行情链接</a>
+							
+						</li>
+					</ul>
+
+					<ul class="mui-table-view mui-table-view-chevron">
+
+						<li class="mui-table-view-cell" id="idProportion">
+							<a href="#" class="mui-navigate-right"><span class=" iconfont icon-zhanbi"></span> 销量单品占比</a>
+						</li>
+
+					</ul>
+
+					<ul class="mui-table-view mui-table-view-chevron">
+
 						<li class="mui-table-view-cell" id="checkUpdate">
-							<a href="#" class="mui-navigate-right" ><span class=" iconfont icon-gengxin"></span> 检查更新</a>
+							<a href="#" class="mui-navigate-right"><span class=" iconfont icon-gengxin"></span> 检查更新</a>
 						</li>
 						<!--
 						<li class="mui-table-view-cell" id="clearCache">
@@ -210,8 +243,11 @@
 						</li>
 						-->
 					</ul>
-					
+
 					<ul class="mui-table-view" style="margin-bottom: 30px;">
+						<li class="mui-table-view-cell" style="text-align: center;" id="switch">
+							<a><span class=" iconfont icon-qiehuan"></span> 切换帐号</a>
+						</li>
 						<li class="mui-table-view-cell" style="text-align: center;" id="quit">
 							<a><span class=" iconfont icon-tuichu"></span> 退出登录</a>
 						</li>
@@ -220,72 +256,103 @@
 			</div>
 		</div>
 		<script src="js/mui.min.js "></script>
-		<script type="text/javascript" src="js/jquery-1.11.2.min.js" ></script>
-		<script type="text/javascript" src="js/qiao.h.js" ></script>
-		<script type="text/javascript" src="js/app.js" ></script>
+		<script src="js/mui.picker.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="js/qiao.h.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
 		<script>
 			mui.init();
 			mui.plusReady(function() {
-				$('#username').text('账号:'+qiao.h.getItem('loginuser'));
-				qiao.on('#originInformation','tap',function(){
-					
-					plus.runtime.openURL('http://www.nxin.com.cn/market/historydeal.php?market=1&sn=0');  
+				$('#username').text('账号:' + qiao.h.getItem('loginuser'));
+				qiao.on('#originInformation', 'tap', function() {
+
+					plus.runtime.openURL('http://www.nxin.com.cn/market/historydeal.php?market=1&sn=0');
 				})
-				qiao.on('#quit','tap',function(){
+				qiao.on('#market','tap',function(){
+					qiao.h.open('market','market.html');
+				})
+				qiao.on('#quit', 'tap', function() {
 					qiao.h.delItem("loginuser");
 					qiao.h.delItem("loginpass");
 					qiao.h.open('login', 'login.html');
 				})
-				qiao.on('#stockQuery','tap',function(){
-					qiao.h.open('stock','stock.html');
+				qiao.on('#stockQuery', 'tap', function() {
+					qiao.h.open('stock', 'stock.html');
 				})
-				qiao.on('#sellQuery','tap',function(){
-					qiao.h.open('report','report.html');  
+				qiao.on('#switch', 'tap', function() {
+					var picker = new mui.PopPicker();
+					var userListStr = qiao.h.getItem('userlist'); 
+					var userList = {};
+					if (userListStr != ''){
+						userList = JSON.parse(userListStr);
+					} 
+					var pickData = [];
+					userList.forEach(function(item){
+						pickData.push({
+							value : item.loginpass,
+							text:item.loginuser,
+							usertype:item.usertype
+						})
+					})
+					picker.setData(pickData);
+					picker.show(function(selectItems) {
+						console.log(selectItems[0].text); //智子
+						console.log(selectItems[0].value); //zz 
+						console.log(selectItems[0].usertype);
+						qiao.h.insertItem('loginuser',selectItems[0].text);
+						qiao.h.insertItem('loginpass',selectItems[0].value);
+						qiao.h.insertItem('usertype',selectItems[0].usertype);
+						qiao.h.fire('main','show');
+						$('#username').text('账号:' + qiao.h.getItem('loginuser'));
+					})
 				})
-				qiao.on('#sellAssess','tap',function(){
-					qiao.h.open('sellAssess','sellAssess.html');
+				qiao.on('#sellQuery', 'tap', function() {
+					qiao.h.open('report', 'report.html');
 				})
-				qiao.on('#idProportion','tap',function(){
-					qiao.h.open('supplier_proportion','supplier_proportion.html');
+				qiao.on('#sellAssess', 'tap', function() {
+					qiao.h.open('sellAssess', 'sellAssess.html');
 				})
-				qiao.on('#idTrendQuery','tap',function(){
-					qiao.h.open('trendQuery','trendQuery.html');
+				qiao.on('#idProportion', 'tap', function() {
+					qiao.h.open('supplier_proportion', 'supplier_proportion.html');
 				})
-				qiao.on('#idPerformanceTrend','tap',function(){
-					qiao.h.open('performanceTrend','performanceTrend.html');
+				qiao.on('#idTrendQuery', 'tap', function() {
+					qiao.h.open('trendQuery', 'trendQuery.html');
 				})
-				qiao.on('#idBillingTrend','tap',function(){
-					qiao.h.open('billingTrend','billingTrend.html');
+				qiao.on('#idPerformanceTrend', 'tap', function() {
+					qiao.h.open('performanceTrend', 'performanceTrend.html');
 				})
-				qiao.on('#idSellHistory','tap',function(){
+				qiao.on('#idBillingTrend', 'tap', function() {
+					qiao.h.open('billingTrend', 'billingTrend.html');
+				})
+				qiao.on('#idSellHistory', 'tap', function() {
 					qiao.h.insertItem('clienttype', '客户');
-						qiao.h.insertItem('selectClientType', 'sellHistory');
-						qiao.h.open('clientList', 'clientList.html');
+					qiao.h.insertItem('selectClientType', 'sellHistory');
+					qiao.h.open('clientList', 'clientList.html');
 				})
-				qiao.on('#todayBill','tap',function(){
-					qiao.h.open('todayBill','todayBill.html');
+				qiao.on('#todayBill', 'tap', function() {
+					qiao.h.open('todayBill', 'todayBill.html');
 				})
-				qiao.on('#clientListByHandler','tap',function(){
-					qiao.h.open('clientListByHandler','clientListByHandler.html');
+				qiao.on('#clientListByHandler', 'tap', function() {
+					qiao.h.open('clientListByHandler', 'clientListByHandler.html');
 				})
-				qiao.on('#performance','tap',function(){
-					qiao.h.open('performance','performance.html'); 
+				qiao.on('#performance', 'tap', function() {
+					qiao.h.open('performance', 'performance.html');
 				})
-				qiao.on('#myType','tap',function(){
-					qiao.h.open('myType','myType.html'); 
+				qiao.on('#myType', 'tap', function() {
+					qiao.h.open('myType', 'myType.html');
 				})
-				qiao.on('#printSetting','tap',function(){
-					qiao.h.open('printSetting','printSetting.html'); 
+				qiao.on('#printSetting', 'tap', function() {
+					qiao.h.open('printSetting', 'printSetting.html');
 				})
-				qiao.on('#clearCache','tap',function(){
-					
+				qiao.on('#clearCache', 'tap', function() {
+
 				})
-				window.addEventListener('reload',function(){
-					$('#username').text('账号:'+qiao.h.getItem('loginuser'));  
+				window.addEventListener('reload', function() {
+					$('#username').text('账号:' + qiao.h.getItem('loginuser'));
 				})
 				var wgtVer = null;
-				qiao.on('#checkUpdate','tap',function(){
-					
+				qiao.on('#checkUpdate', 'tap', function() {
+
 					plus.runtime.getProperty(plus.runtime.appid, function(inf) {
 						wgtVer = inf.version;
 						console.log("当前应用版本：" + wgtVer);
@@ -294,6 +361,7 @@
 				})
 				var checkUrl = "http://www.jishengsoft.com/admin/uploadFiles/JsPhone/checkhzsc.asp";
 				var wgtUrl = "http://www.jishengsoft.com/admin/uploadFiles/JsPhone/updatehzsc.wgt";
+
 				function checkUpdate() {
 					plus.nativeUI.showWaiting("检测更新...");
 					var xhr = new XMLHttpRequest();
@@ -322,13 +390,11 @@
 								break;
 						}
 					}
-					xhr.open('GET', checkUrl);  
+					xhr.open('GET', checkUrl);
 					xhr.send();
 				}
 
 				// 下载wgt文件
-				
-				
 
 				function downWgt() {
 					plus.nativeUI.showWaiting("下载wgt文件...");

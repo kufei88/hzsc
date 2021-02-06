@@ -48,7 +48,7 @@
 		var address = settings.address ? settings.address : '';
 		var account = settings.account ? settings.account : '';
 		var port = settings.port ? settings.port : '';
-		var url1 = 'http://' + address + ':' + port +'/PSSWeb/'+ url;
+		var url1 = 'https://' + address + ':' + port +'/PSSWeb/'+ url;
 		data1.databaseName = account;
 	    $.ajax(url1,{  
 	        data:data1,
@@ -81,7 +81,7 @@
 		var address = settings.address ? settings.address : '';
 		
 		var port = settings.port ? settings.port : '';
-		var url1 = 'http://' + address + ':' + port +'/PSSWeb/'+ url;
+		var url1 = 'https://' + address + ':' + port +'/PSSWeb/'+ url;
 		
 	    $.ajax(url1,{  
 	        data:data1,
@@ -98,7 +98,7 @@
 	        },
 	        error:function(xhr,type,errorThrown){  
 	        	console.log(errorThrown);
-	        	console.log(url);
+	        	console.log(url1);
 	        	if(wd){
 	        		wd.close();  
 	        	}
@@ -114,7 +114,7 @@
 		var address = settings.address ? settings.address : '';
 		
 		var port = settings.port ? settings.port : '';
-		var url1 = 'http://' + address + ':' + port +'/PSSWeb/'+ url;
+		var url1 = 'https://' + address + ':' + port +'/PSSWeb/'+ url;
 		
 	    $.ajax(url1,{  
 	        data:data1,

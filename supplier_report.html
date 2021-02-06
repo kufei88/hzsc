@@ -32,19 +32,19 @@
 			<div class="mui-row" style="border-bottom: 1px solid #DDDDDD;">
 
 				<div class="mui-row mui-col-xs-6">
-				<div class="mui-col-xs-3" style="margin-top: 5px;"><button id="previous">前一天</button></div>
-				<div id="selectBegin" class="date  mui-col-xs-9" style="border: none;">
+				
+				<div id="selectBegin" class="date  mui-col-xs-12" style="border: none;">
 					<div class="mui-navigate-right">开始日期:<span id="beginDate"></span></div>
 				</div>
 			</div>
 			
 			<div class="mui-row mui-col-xs-6">
 			
-			<div id="selectEnd" class="date mui-col-xs-9" >
+			<div id="selectEnd" class="date mui-col-xs-12" >
 				<div class="mui-navigate-right">结束日期:<span id="endDate"></span></div>
 				
 			</div>
-			<div class="mui-col-xs-3" style="margin-top: 5px;">	<button id="next">后一天</button></div>
+			
 			</div>
 
 			</div>
@@ -115,8 +115,8 @@
 					})
 				})
 				
-				qiao.on('#previous','tap',function(){
-		        	var now = new Date($('#beginDate').text());
+				window.addEventListener('previous',function(){
+					var now = new Date($('#beginDate').text());
 		        	var pre = new Date(now.getTime()-1000*3600*24);
 		        	console.log(pre);
 		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
@@ -129,21 +129,29 @@
 				'-'+qiao.h.formatdate(pre.getDate());
 					$('#endDate').text(pref);
 					initGoodsList();
+				})
+				
+				window.addEventListener('next',function(){
+					var now = new Date($('#beginDate').text());
+		        	var pre = new Date(now.getTime()+1000*3600*24);
+		        	console.log(pre);
+		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
+				'-'+qiao.h.formatdate(pre.getDate());
+					$('#beginDate').text(pref);
+					var now = new Date($('#endDate').text());
+		        	var pre = new Date(now.getTime()+1000*3600*24);
+		        	console.log(pre);
+		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
+				'-'+qiao.h.formatdate(pre.getDate());
+					$('#endDate').text(pref);
+					initGoodsList();
+				})
+				
+				qiao.on('#previous','tap',function(){
+		        	
 		        })
 		        qiao.on('#next','tap',function(){
-		        	var now = new Date($('#beginDate').text());
-		        	var pre = new Date(now.getTime()+1000*3600*24);
-		        	console.log(pre);
-		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
-				'-'+qiao.h.formatdate(pre.getDate());
-					$('#beginDate').text(pref);
-					var now = new Date($('#endDate').text());
-		        	var pre = new Date(now.getTime()+1000*3600*24);
-		        	console.log(pre);
-		        	var pref= pre.getFullYear()+'-'+qiao.h.formatdate(pre.getMonth()+1)+
-				'-'+qiao.h.formatdate(pre.getDate());
-					$('#endDate').text(pref);
-					initGoodsList();
+		        	
 		        })
 			})
 			

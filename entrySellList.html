@@ -104,8 +104,8 @@
 			var area = '';
 			mui.plusReady(function(){
 				initEvent();
-				$('#header').hide();
-				$('.mui-content').css('margin-top','-30px');
+				//$('#header').hide();
+				//$('.mui-content').css('margin-top','-30px');
 				
 				
 				search();
@@ -124,11 +124,11 @@
 					})
 					
 					qiao.on('#billList li','tap',function(){
-						qiao.h.open('newBill.html','newBill.html',{billDate:$(this).data('billdate'),
+					//	qiao.h.open('newBill.html','newBill.html',{billDate:$(this).data('billdate'),
+					//	client:$(this).data('client')});
+						qiao.h.fire('newBill.html','enrtySellBack',{billDate:$(this).data('billdate'),
 						client:$(this).data('client')});
-						//qiao.h.fire('newBill.html','enrtySellBack',{billDate:$(this).data('billdate'),
-						//client:$(this).data('client')});
-						//mui.back();
+						mui.back();
 						
 					})
 					
@@ -146,7 +146,8 @@
 					})
 					
 					qiao.on('#newBill','tap',function(){
-						qiao.h.open('newBill.html','newBill.html',{});
+						//qiao.h.open('newBill.html','newBill.html',{});
+						mui.back();
 					})
 					
 					

@@ -25,13 +25,14 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav" id="header" style="padding-right: 15px;">
+			<button id="previous" style="display: none;" class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-left">前一天</button>
 			<h1 id="title" class="mui-title">开新单</h1>
 			<button type="button" id="btnok" style="display: none;" class="mui-right mui-btn mui-btn-link mui-btn-nav mui-pull-right">
 				保存
 			</button>
 		</header>
 		<nav class="mui-bar mui-bar-tab">
-			<a class="mui-tab-item mui-active" href="entrySellList.html" id="nav1">
+			<a class="mui-tab-item mui-active" href="newBill.html" id="nav1">
 				<span class="mui-icon iconfont icon-kaidan" id="navicon1"></span>
 				<span class="mui-tab-label" id="tab1">开新单</span>
 			</a>
@@ -70,7 +71,7 @@
 				var settings = app.getSettings();
 				var account = doc.getElementById('account');
 				//
-				var subpages = ['entrySellList.html',
+				var subpages = ['newBill.html',
 					'sellOrder.html',
 					'clientDeliver.html',
 					'singleDeliver.html',
@@ -157,8 +158,23 @@
 					console.log(doc.getElementById('title').innerText);
 					if (doc.getElementById('title').innerText == '销售订单') {
 						qiao.h.fire('sellOrder.html', 'btnok');
-					} else {
+					} else if (doc.getElementById('title').innerText == '查销售') {
+						qiao.h.fire('supplier_sellQuery.html', 'next');
+					}
+					else if (doc.getElementById('title').innerText == '查结算') {
+						qiao.h.fire('supplier_report.html', 'next');
+					}
+					else {
 						qiao.h.fire('newBill.html', 'btnok');
+					}
+				})
+				
+				document.getElementById("previous").addEventListener('tap', function() {
+					console.log(doc.getElementById('title').innerText);
+					if (doc.getElementById('title').innerText == '查销售') {
+						qiao.h.fire('supplier_sellQuery.html', 'previous');
+					} else {
+						qiao.h.fire('supplier_report.html', 'previous');
 					}
 				})
 				//当前激活选项
@@ -173,11 +189,24 @@
 					}
 					//更换标题
 					title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
-					if (!((this.querySelector('.mui-tab-label').innerHTML == '销售订单'))) {
+					if (!((this.querySelector('.mui-tab-label').innerHTML == '销售订单')||(this.querySelector('.mui-tab-label').innerHTML == '开新单'))) {
 						document.getElementById("btnok").style.display = 'none';
+						if((this.querySelector('.mui-tab-label').innerHTML == '查销售')||
+						(this.querySelector('.mui-tab-label').innerHTML == '查结算')){
+							document.getElementById("previous").style.display = '';
+							document.getElementById("btnok").innerText = '后一天';
+							document.getElementById("btnok").style.display = '';
+						}
+						else{
+							document.getElementById("previous").style.display = 'none';
+						}
 					} else {
 						document.getElementById("btnok").style.display = '';
 					}
+					
+					
+					
+					
 
 					if (this.querySelector('.mui-tab-label').innerHTML == '今日开单') {
 						qiao.h.fire('todayBill.html', 'reload');

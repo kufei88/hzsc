@@ -139,6 +139,27 @@
 						});
 						qiao.h.insertItem('loginuser',accountBox.value);
 						qiao.h.insertItem('loginpass',passwordBox.value);
+						var userListStr = qiao.h.getItem('userlist'); 
+						console.log(userListStr);
+						var userList = [];
+						if (userListStr){
+							userList = JSON.parse(userListStr);
+						}
+						var uIndex = -1;
+						if (userList.length > 0){
+						userList.forEach(function(item,index){
+							if(item.loginuser == accountBox.value){
+								uIndex = index;
+							}
+						})}
+						if(uIndex == -1){
+							userList.push({
+								loginuser:accountBox.value,
+								loginpass:passwordBox.value,
+								usertype:result
+							})
+						}
+						qiao.h.insertItem('userlist',JSON.stringify(userList));
 						console.log(result);
 						qiao.h.insertItem('usertype',result);
 						qiao.h.fire('my.html','reload');

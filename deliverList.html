@@ -328,6 +328,7 @@
 				}
 
 				function genSqlli(item, count) {
+					console.log(item.sourceId);
 					var remark = "";
 					if(qiao.h.getItem(item.billCode + item.sourceId + 'remark')){
 							remark = qiao.h.getItem(item.billCode + item.sourceId  + 'remark');

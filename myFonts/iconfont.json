@@ -69,6 +69,13 @@
       "unicode_decimal": 58918
     },
     {
+      "icon_id": "1991615",
+      "name": "订单查询",
+      "font_class": "dingdanchaxun",
+      "unicode": "e6b2",
+      "unicode_decimal": 59058
+    },
+    {
       "icon_id": "2530347",
       "name": "类别",
       "font_class": "leibie",
@@ -242,6 +249,13 @@
       "font_class": "qingkong1",
       "unicode": "e60b",
       "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "8300845",
+      "name": "切换",
+      "font_class": "qiehuan",
+      "unicode": "e611",
+      "unicode_decimal": 58897
     }
   ]
 }
